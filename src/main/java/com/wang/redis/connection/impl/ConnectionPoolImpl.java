@@ -11,6 +11,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @Description redis连接池
+ * <p>
+ *     自动加载配置文件中配置的一些配置参数 rediswang.*
+ * </p>
  * @author Jianxin Wang
  * @date 2019-08-27
  */
