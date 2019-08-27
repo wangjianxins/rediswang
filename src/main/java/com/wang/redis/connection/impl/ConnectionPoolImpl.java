@@ -21,18 +21,18 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ConnectionPoolImpl implements ConnectionPool {
 
     //当前连接池
-    private volatile LinkedList<Connection> connectionPool;
+    private volatile LinkedList<Connection> connectionPool = new LinkedList<>();
 
     private ReentrantLock lock = new ReentrantLock();
 
     //最大连接数
-    private int maxSize;
+    private int maxSize = 20;
 
     //最小空闲数，用于初始化使用
-    private int minIdleSize;
+    private int minIdleSize = 3;
 
     //最大空闲数，用于释放连接使用
-    private int maxIdleSize;
+    private int maxIdleSize = 5;
 
     //当前连接数
     private int totalSize;
@@ -166,6 +166,7 @@ public class ConnectionPoolImpl implements ConnectionPool {
         }
         int len = minIdleSize - connectionPool.size();
         for(int i = 0; i < len; i++){
+//            Connection connection = new ConnectionImpl("127.0.0.1",6379);
             Connection connection = new ConnectionImpl("127.0.0.1",6379);
             connectionPool.add(new ConnectionProxy(connection,this));
             totalSize++;
