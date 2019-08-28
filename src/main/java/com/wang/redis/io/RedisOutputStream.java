@@ -4,6 +4,14 @@ import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * @Description
+ *
+ * 此类借鉴jedis源代码
+ *
+ * @author Jianxin Wang
+ * @date 2019-08-28
+ */
 public final class RedisOutputStream extends FilterOutputStream {
 
     private final static int[] sizeTable = { 9, 99, 999, 9999, 99999, 999999, 9999999, 99999999, 999999999, Integer.MAX_VALUE };

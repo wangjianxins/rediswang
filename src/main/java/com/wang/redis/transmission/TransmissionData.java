@@ -6,6 +6,9 @@ import java.io.IOException;
 
 /**
  * @Description 此类用于数据的传输
+ *
+ * 此类借鉴jedis源代码。。。
+ *
  * @author Jianxin Wang
  * @date 2019-08-28
  */
