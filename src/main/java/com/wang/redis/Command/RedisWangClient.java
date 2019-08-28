@@ -8,48 +8,33 @@ import com.wang.redis.io.RedisOutputStream;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.List;
 
-public class RedisWangClinet extends AbstractCommand {
+public class RedisWangClient extends AbstractCommand {
     protected final Logger LOGGER = Logger.getLogger(getClass());
 
     Serializer<String> s = new StringRedisSerializer();
 
-    public RedisWangClinet(Connection connection) {
+    public RedisWangClient(Connection connection) {
         super(connection);
     }
 
-    @Override
-    protected Object receive(InputStream inputStream, Object... arguments) throws Exception {
-        RedisInputStream in = (RedisInputStream) inputStream;
-        String response = in.readLine();
-        if (isOk(response)) {
-            return true;
-        } else {
-            throw new RuntimeException(extractResult(response));
-        }
-    }
-
-    private static final String trueResultPrefix = "+";
     public static boolean isOk(String response) {
         return response != null && response.startsWith(trueResultPrefix);
-    }
-
-    public static boolean isStringLengthResultOk(String response) {
-        return response != null && response.startsWith(stringLengthResultPrefix);
     }
 
     public static String extractResult(String response) {
         return (response == null || response.length() == 0) ? null : response.substring(1);
     }
 
+    private static final String trueResultPrefix = "+";
     private static final String stringLengthResultPrefix = "$";
     private static final String COMMAND_SEPARATOR = "_";
     private static final String SPACE = " ";
+    private static final byte arrayLengthResultPrefixByte = '*';
+    private static final byte stringLengthResultPrefixByte = '$';
 
-    protected void send(OutputStream outputStream, Command command,Object... arguments) throws Exception {
+    protected void send(RedisOutputStream outputStream, Command command,Object... arguments) throws Exception {
         String commandString = command.name();
         if (command.name().indexOf(COMMAND_SEPARATOR) > 0) {
             commandString = command.name().replace(COMMAND_SEPARATOR, SPACE);
@@ -58,7 +43,6 @@ public class RedisWangClinet extends AbstractCommand {
         for (int i = 0; i < arguments.length; i++) {
             if (arguments[i] instanceof byte[]) {
                 argumentBytes[i] = (byte[]) arguments[i];
-
             } else if (List.class.isAssignableFrom(arguments[i].getClass())) {
                 List<?> list = (List<?>) arguments[i];
                 byte[][] extendArgumentBytes = new byte[arguments.length + list.size() - 1][];
@@ -67,7 +51,6 @@ public class RedisWangClinet extends AbstractCommand {
                     extendArgumentBytes[i++] = stringToBytes(list.get(j).toString());
                 }
                 argumentBytes = extendArgumentBytes;
-
             } else if (arguments[i].getClass().isArray()) {
                 Object[] array = (Object[]) arguments[i];
                 byte[][] extendArgumentBytes = new byte[arguments.length + array.length - 1][];
@@ -76,17 +59,12 @@ public class RedisWangClinet extends AbstractCommand {
                     extendArgumentBytes[i++] = stringToBytes(array[j].toString());
                 }
                 argumentBytes = extendArgumentBytes;
-
             } else {
                 argumentBytes[i] = stringToBytes(arguments[i].toString());
             }
         }
-        sendCommand((RedisOutputStream) outputStream, stringToBytes(commandString), argumentBytes);
+        sendCommand(outputStream, stringToBytes(commandString), argumentBytes);
     }
-
-
-    private static final byte arrayLengthResultPrefixByte = '*';
-    private static final byte stringLengthResultPrefixByte = '$';
 
 
     public static void sendCommand(RedisOutputStream outputStream, final byte[] command, final byte[]... args) {
@@ -109,30 +87,35 @@ public class RedisWangClinet extends AbstractCommand {
     }
 
 
-    @Override
-    public Boolean set(Object key, Object value) throws IOException {
-        String keys = (String) key;
-        Object[] arguments = new Object[2];
-        arguments[0] = keys;
-        arguments[1] = value;
+    public Boolean set(Object key, Object value){
 
-        Boolean result = true;
+        Boolean result;
         try {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(getClass() + " send command : " + Command.mset + " outputstream : " + connection.getOutputStream());
+                LOGGER.debug(getClass() + " send command : " + Command.set + " outputstream : " + connection.getOutputStream());
             }
-            send(connection.getOutputStream(), Command.mset, arguments);
+            send(connection.getOutputStream(), Command.set, key,value);
             connection.getOutputStream().flush();
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(getClass() + " receive data , command : " + Command.mset + " inputstream : " + connection.getInputStream());
+                LOGGER.debug(getClass() + " receive data , command : " + Command.set + " inputstream : " + connection.getInputStream());
             }
 
-            result = (Boolean) receive(connection.getInputStream(), Command.mset, arguments);
+            result = (Boolean) receive(connection.getInputStream(), Command.set, key,value);
             connection.getInputStream().clear();
         } catch (Exception e) {
             throw new RuntimeException("command execute failed!", e);
         }
         connection.close();
         return result;
+    }
+
+    @Override
+    protected Object receive(RedisInputStream inputStream, Object... arguments) throws Exception {
+        String response = inputStream.readLine();
+        if (isOk(response)) {
+            return true;
+        } else {
+            throw new RuntimeException(extractResult(response));
+        }
     }
 }

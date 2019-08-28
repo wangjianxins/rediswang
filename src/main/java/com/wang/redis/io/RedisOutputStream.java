@@ -17,23 +17,40 @@ public final class RedisOutputStream extends FilterOutputStream {
     protected int count;
     protected final byte buf[];
 
-    /**
-     * Creates an output stream filter built on top of the specified
-     * underlying output stream.
-     *
-     * @param out the underlying output stream to be assigned to
-     *            the field <tt>this.out</tt> for later use, or
-     *            <code>null</code> if this instance is to be
-     *            created without an underlying stream.
-     */
     public RedisOutputStream(OutputStream out) {
+        this(out,8192);
+    }
+
+    public RedisOutputStream(final OutputStream out,final int size){
         super(out);
-        int size = 8192;
-        if (size <= 0) {
-            throw new IllegalArgumentException("Buffer size <= 0");
-        }
         buf = new byte[size];
     }
+
+    public void write(final byte b) throws IOException {
+        if (count == buf.length) {
+            flushBuffer();
+        }
+        buf[count++] = b;
+    }
+
+    public void write(final byte[] b) throws IOException {
+        write(b, 0, b.length);
+    }
+
+    public void write(final byte b[], final int off, final int len) throws IOException {
+        if (len >= buf.length) {
+            flushBuffer();
+            out.write(b, off, len);
+        } else {
+            if (len >= buf.length - count) {
+                flushBuffer();
+            }
+
+            System.arraycopy(b, off, buf, count, len);
+            count += len;
+        }
+    }
+
 
     public void writeIntCrLf(int value) throws IOException {
         if (value < 0) {
@@ -88,5 +105,10 @@ public final class RedisOutputStream extends FilterOutputStream {
 
         buf[count++] = '\r';
         buf[count++] = '\n';
+    }
+
+    public void flush() throws IOException {
+        flushBuffer();
+        out.flush();
     }
 }

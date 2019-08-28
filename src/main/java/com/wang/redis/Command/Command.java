@@ -7,7 +7,7 @@ package com.wang.redis.Command;
  */
 public enum Command {
 
-    mset
+    set
 
 
 

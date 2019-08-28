@@ -167,7 +167,7 @@ public class ConnectionPoolImpl implements ConnectionPool {
         int len = minIdleSize - connectionPool.size();
         for(int i = 0; i < len; i++){
 //            Connection connection = new ConnectionImpl("127.0.0.1",6379);
-            Connection connection = new ConnectionImpl("127.0.0.1",6379);
+            Connection connection = new ConnectionImpl("localhost",6379);
             connectionPool.add(new ConnectionProxy(connection,this));
             totalSize++;
         }

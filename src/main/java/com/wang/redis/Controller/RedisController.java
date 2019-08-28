@@ -1,7 +1,6 @@
 package com.wang.redis.Controller;
 
-import com.wang.redis.Command.AbstractCommand;
-import com.wang.redis.Command.RedisWangClinet;
+import com.wang.redis.Command.RedisWangClient;
 import com.wang.redis.connection.Connection;
 import com.wang.redis.connection.ConnectionPool;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +18,7 @@ public class RedisController {
     @RequestMapping("/redis")
     public void redis() throws IOException {
         Connection connection = connectionPool.getConnection();
-        RedisWangClinet redisWangClinet = new RedisWangClinet(connection);
-        redisWangClinet.set("wang","test");
-
+        RedisWangClient redisWangClient = new RedisWangClient(connection);
+        redisWangClient.set("666","wwww");
     }
 }

@@ -1,32 +1,27 @@
 package com.wang.redis.io;
 
+import org.apache.log4j.Logger;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class RedisInputStream extends FilterInputStream {
+    private static final Logger LOGGER = Logger.getLogger(FilterInputStream.class);
 
     protected byte[] buf;
 
     protected int count, limit,size;
 
 
-    /**
-     * Creates a <code>FilterInputStream</code>
-     * by assigning the  argument <code>in</code>
-     * to the field <code>this.in</code> so as
-     * to remember it for later use.
-     *
-     * @param in the underlying input stream, or <code>null</code> if
-     *           this instance is to be created without an underlying stream.
-     */
     public RedisInputStream(InputStream in) {
+        this(in,8192);
+    }
+
+    public RedisInputStream(InputStream in,int size){
         super(in);
-        int size = 100;
-        if (size <= 0) {
-            throw new IllegalArgumentException("Buffer size <= 0");
-        }
+        this.size = size;
         buf = new byte[size];
     }
 
@@ -37,10 +32,7 @@ public class RedisInputStream extends FilterInputStream {
     }
 
     public byte readByte() throws IOException {
-        if (count == limit) {
-            fill();
-        }
-
+        ensureFill();
         return buf[count++];
     }
 
@@ -49,6 +41,14 @@ public class RedisInputStream extends FilterInputStream {
         count = 0;
     }
 
+    public int read(byte[] b, int off, int len) throws IOException {
+        ensureFill();
+
+        final int length = Math.min(limit - count, len);
+        System.arraycopy(buf, count, b, off, length);
+        count += length;
+        return length;
+    }
 
     public String readLine() throws IOException {
         final StringBuilder sb = new StringBuilder();
@@ -71,6 +71,9 @@ public class RedisInputStream extends FilterInputStream {
         }
 
         final String reply = sb.toString();
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("read line [" + reply + "]");
+        }
         if (reply.length() == 0) {
             throw new IOException("It seems like server has closed the connection.");
         }
