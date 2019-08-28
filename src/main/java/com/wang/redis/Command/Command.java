@@ -7,7 +7,18 @@ package com.wang.redis.Command;
  */
 public enum Command {
 
-    set
+    set,
+
+    del,
+
+    get,
+
+    incr,
+
+    mget,
+
+    mset,
+    expire,
 
 
 

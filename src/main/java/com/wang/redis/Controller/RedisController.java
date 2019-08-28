@@ -1,6 +1,6 @@
 package com.wang.redis.Controller;
 
-import com.wang.redis.Command.RedisWangClient;
+import com.wang.redis.client.RedisWangClient;
 import com.wang.redis.connection.Connection;
 import com.wang.redis.connection.ConnectionPool;
 import org.springframework.beans.factory.annotation.Autowired;

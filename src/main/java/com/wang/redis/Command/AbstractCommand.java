@@ -23,11 +23,4 @@ public abstract class AbstractCommand<T> extends BaseCommand{
     protected abstract Object receive(RedisInputStream inputStream, Object... arguments) throws Exception;
 
 
-    public static byte[] stringToBytes(String s){
-        try {
-            return s.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
