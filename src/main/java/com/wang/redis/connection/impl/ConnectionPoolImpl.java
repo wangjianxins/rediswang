@@ -1,5 +1,6 @@
 package com.wang.redis.connection.impl;
 
+import com.wang.redis.Exception.RedisWangException;
 import com.wang.redis.config.RedisWangProperties;
 import com.wang.redis.connection.Connection;
 import com.wang.redis.connection.ConnectionPool;
@@ -27,22 +28,22 @@ public class ConnectionPoolImpl implements ConnectionPool {
     private ReentrantLock lock = new ReentrantLock();
 
     //最大连接数
-    private int maxSize = 20;
+    private final int maxSize = 20;
 
     //最小空闲数，用于初始化使用
-    private int minIdleSize = 3;
+    private final int minIdleSize = 3;
 
     //最大空闲数，用于释放连接使用
-    private int maxIdleSize = 5;
+    private final int maxIdleSize = 5;
 
     //当前连接数
-    private int totalSize;
+    private volatile int totalSize;
 
     public ConnectionPoolImpl(RedisWangProperties redisWangProperties){
         this.address = redisWangProperties.getAddress();
         this.port = redisWangProperties.getPort();
         if(this.port <= 0){
-            throw new RuntimeException("[redis-wang]redis的端口设置错误");
+            throw new RedisWangException("[redis-wang]redis的端口设置错误");
         }
     }
 
@@ -95,6 +96,13 @@ public class ConnectionPoolImpl implements ConnectionPool {
                 }
             }
         }
+
+        if(null == connection){
+            throw new RedisWangException("[redis-wang]当前获得redis实例为空");
+
+            //激活重试等待机制
+        }
+
         return connection;
     }
 
@@ -135,7 +143,7 @@ public class ConnectionPoolImpl implements ConnectionPool {
             try {
                 incrementPool();
             } catch (Exception e) {
-                throw new RuntimeException("[redis-wang]获得连接池错误");
+                throw new RedisWangException("[redis-wang]获得连接池错误");
             } finally {
                 lock.unlock();
             }
