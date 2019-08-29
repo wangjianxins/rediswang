@@ -14,20 +14,22 @@
 
 ##redis服务交互说明：
 
-1、当我们set wang（key） redis(value) 这个命令时候,需要传送给redis服务器指令为：*3\r\n$3\r\nSET\r\n$4\r\n\wang\r\n$5\r\nredis
-其中\r\n表示换行，RESP规定的，格式化后如下：\<br>  
-    *3 可以理解为总共有三个param\<br>  
-    $3 表示'set'字节个数\<br>  
-    set\<br>  
-    $4 表示'wang'的字节个数\<br>  
-    wang\<br>  
-    $5 表示'redis'的字节个数\<br>  
-    redis\<br>  
+        1、当我们set wang（key） redis(value) 这个命令时候,需要传送给redis服务器指令为：*3\r\n$3\r\nSET\r\n$4\r\n\wang\r\n$5\r\nredis
+        其中\r\n表示换行，RESP规定的，格式化后如下：\<br> 
+         
+        *3 可以理解为总共有三个param\<br>  
+        $3 表示'set'字节个数\<br>  
+        set\<br>  
+        $4 表示'wang'的字节个数\<br>  
+        wang\<br>  
+        $5 表示'redis'的字节个数\<br>  
+        redis\<br>  
     
-2、返回结果：当set wang(key) redis(value)后如果成功返回 +OK\<br>  
-其中 '+' 也是redis的RESP协议规定的，redis服务返回都有如下这些(都是在返回数据中的第一个字节哦)：\<br>  
-    + 表示状态恢复 例如set后返回+OKr\<br>  
-    - 表示一些错误命令之类的\<br>  
-    : incr需要返回整数的，incr操作也是类似++的操作，和incr类似的操作都会返回 ':1' 或者 ':操作的数字个数'\<br>  
-    $ 一般是返回字符串例如get操作返回string字符串\<br>  
-    * 多条string mget操作返回， *3 返回三条string结果\<br>  
+        2、返回结果：当set wang(key) redis(value)后如果成功返回 +OK\<br>  
+        其中 '+' 也是redis的RESP协议规定的，redis服务返回都有如下这些(都是在返回数据中的第一个字节哦)：\<br>  
+        
+        + 表示状态恢复 例如set后返回+OKr\<br>  
+        - 表示一些错误命令之类的\<br>  
+        : incr需要返回整数的，incr操作也是类似++的操作，和incr类似的操作都会返回 ':1' 或者 ':操作的数字个数'\<br>  
+        $ 一般是返回字符串例如get操作返回string字符串\<br>  
+        * 多条string mget操作返回， *3 返回三条string结果\<br>  
