@@ -11,7 +11,6 @@ import java.util.List;
 
 public abstract class AbstractExecute<T> implements Execute<T> {
 
-    private Connection connection;
 
     @Override
     public T doExecute(Connection connection,Command command,Object ...params){

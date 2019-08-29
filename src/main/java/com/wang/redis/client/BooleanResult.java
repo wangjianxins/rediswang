@@ -2,8 +2,12 @@ package com.wang.redis.client;
 
 import com.wang.redis.Command.Command;
 import com.wang.redis.io.RedisInputStream;
-import org.springframework.util.StringUtils;
 
+/**
+ * @Description boolean类型的返回
+ * @author Jianxin Wang
+ * @date 2019-08-29
+ */
 public class BooleanResult extends AbstractExecute<Boolean> {
 
     @Override

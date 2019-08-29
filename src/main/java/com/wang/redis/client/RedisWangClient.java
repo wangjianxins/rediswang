@@ -1,7 +1,10 @@
 package com.wang.redis.client;
 
 import com.wang.redis.Command.Command;
-import com.wang.redis.connection.Connection;
+import com.wang.redis.config.RedisWangProperties;
+import com.wang.redis.connection.ConnectionPool;
+import com.wang.redis.connection.impl.ConnectionPoolImpl;
+
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -12,11 +15,10 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class RedisWangClient implements WangClient  {
 
+    protected ConnectionPool connectionPool;
 
-    protected Connection connection;
-
-    public RedisWangClient(Connection connection) {
-        this.connection = connection;
+    public RedisWangClient(RedisWangProperties redisWangProperties){
+        connectionPool = new ConnectionPoolImpl(redisWangProperties);
     }
 
     public <T>T doExecute(Command command,Class<? extends Execute<T>> execute ,Object ...params){
@@ -32,7 +34,7 @@ public class RedisWangClient implements WangClient  {
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
-        return (T) commandInstance.doExecute(connection,command,params);
+        return (T) commandInstance.doExecute(connectionPool.getConnection(),command,params);
     }
 
     public static byte[] stringToBytes(String s){

@@ -5,9 +5,11 @@ import com.wang.redis.connection.ConnectionPool;
 import com.wang.redis.io.RedisInputStream;
 import com.wang.redis.io.RedisOutputStream;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-
+/**
+ * @Description connectionImpl的代理类，主要是close方法不是关闭而是返回list pool
+ * @author Jianxin Wang
+ * @date 2019-08-29
+ */
 public class ConnectionProxy implements Connection {
 
     private Connection connection;

@@ -1,5 +1,6 @@
 package com.wang.redis.connection.impl;
 
+import com.wang.redis.config.RedisWangProperties;
 import com.wang.redis.connection.Connection;
 import com.wang.redis.connection.ConnectionPool;
 import org.springframework.stereotype.Service;
@@ -11,14 +12,14 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @Description redis连接池
- * <p>
- *     自动加载配置文件中配置的一些配置参数 rediswang.*
- * </p>
  * @author Jianxin Wang
  * @date 2019-08-27
  */
 @Service
 public class ConnectionPoolImpl implements ConnectionPool {
+
+    private String address;
+    private int port;
 
     //当前连接池
     private volatile LinkedList<Connection> connectionPool = new LinkedList<>();
@@ -37,6 +38,13 @@ public class ConnectionPoolImpl implements ConnectionPool {
     //当前连接数
     private int totalSize;
 
+    public ConnectionPoolImpl(RedisWangProperties redisWangProperties){
+        this.address = redisWangProperties.getAddress();
+        this.port = redisWangProperties.getPort();
+        if(this.port <= 0){
+            throw new RuntimeException("[redis-wang]redis的端口设置错误");
+        }
+    }
 
     @Override
     public Connection getConnection() {
@@ -127,7 +135,7 @@ public class ConnectionPoolImpl implements ConnectionPool {
             try {
                 incrementPool();
             } catch (Exception e) {
-                System.out.println("获得连接池错误");
+                throw new RuntimeException("[redis-wang]获得连接池错误");
             } finally {
                 lock.unlock();
             }
@@ -167,7 +175,7 @@ public class ConnectionPoolImpl implements ConnectionPool {
         int len = minIdleSize - connectionPool.size();
         for(int i = 0; i < len; i++){
 //            Connection connection = new ConnectionImpl("127.0.0.1",6379);
-            Connection connection = new ConnectionImpl("localhost",6379);
+            Connection connection = new ConnectionImpl(address,port);
             connectionPool.add(new ConnectionProxy(connection,this));
             totalSize++;
         }
