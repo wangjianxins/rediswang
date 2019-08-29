@@ -14,18 +14,18 @@
 
 ## 使用说明
 
-    配置文件：
-        redis:
-            wang:
-                address: XX
-                enbale: true
-                port: XX
+    #配置文件：
+    redis:
+        wang:
+            address: XX
+            enbale: true
+            port: XX
 
-    依赖注入
+    #依赖注入
     @Autowired
     private RedisWangClient redisWangClient;
     
-    使用如下：
+    #使用如下：
      ...
         int result = redisWangClient.incr("user");
         return result;
