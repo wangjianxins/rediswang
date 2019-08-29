@@ -12,6 +12,26 @@
 持续更新中...
 
 
+## 使用说明
+
+    配置文件：
+        redis:
+            wang:
+                address: XX
+                enbale: true
+                port: XX
+
+    依赖注入
+    @Autowired
+    private RedisWangClient redisWangClient;
+    
+    使用如下：
+     ...
+        int result = redisWangClient.incr("user");
+        return result;
+     ...
+
+
 ## redis服务交互说明：
 
         1、当我们set wang（key） redis(value) 这个命令时候,需要传送给redis服务器指令为：
