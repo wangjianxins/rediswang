@@ -14,7 +14,8 @@
 
 ##redis服务交互说明：
 
-        1、当我们set wang（key） redis(value) 这个命令时候,需要传送给redis服务器指令为：*3\r\n$3\r\nSET\r\n$4\r\n\wang\r\n$5\r\nredis
+        1、当我们set wang（key） redis(value) 这个命令时候,需要传送给redis服务器指令为：
+        *3\r\n$3\r\nSET\r\n$4\r\n\wang\r\n$5\r\nredis\<br> 
         其中\r\n表示换行，RESP规定的，格式化后如下：\<br> 
          
         *3 可以理解为总共有三个param\<br>  
