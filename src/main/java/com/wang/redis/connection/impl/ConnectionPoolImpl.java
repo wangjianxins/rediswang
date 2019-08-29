@@ -4,8 +4,8 @@ import com.wang.redis.Exception.RedisWangException;
 import com.wang.redis.config.RedisWangProperties;
 import com.wang.redis.connection.Connection;
 import com.wang.redis.connection.ConnectionPool;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
@@ -18,6 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 @Service
 public class ConnectionPoolImpl implements ConnectionPool {
+    private static final Logger logger = Logger.getLogger(ConnectionPoolImpl.class);
 
     private String address;
     private int port;
@@ -34,7 +35,7 @@ public class ConnectionPoolImpl implements ConnectionPool {
     private final int minIdleSize = 3;
 
     //最大空闲数，用于释放连接使用
-    private final int maxIdleSize = 5;
+    private final int maxIdleSize = 10;
 
     //当前连接数
     private volatile int totalSize;
@@ -115,20 +116,26 @@ public class ConnectionPoolImpl implements ConnectionPool {
     public void releaseConnection(Connection connection) {
         lock.lock();
         try {
-            connectionPool.add(connection);
+            if (connectionPool.size() < maxIdleSize) {
+                connectionPool.add(connection);
+            } else {
+                connection.close();
+                totalSize--;
+            }
         } finally {
             lock.unlock();
         }
-        if (connectionPool.size() > maxIdleSize) {
-            lock.lock();
-            try {
-                if (connectionPool.size() > maxIdleSize) {
-                    decrementPool(connectionPool.size() - maxIdleSize);
-                }
-            } finally {
-                lock.unlock();
-            }
-        }
+
+//        if (connectionPool.size() > maxIdleSize) {
+//            lock.lock();
+//            try {
+//                if (connectionPool.size() > maxIdleSize) {
+//                    decrementPool(connectionPool.size() - maxIdleSize);
+//                }
+//            } finally {
+//                lock.unlock();
+//            }
+//        }
 
     }
 
@@ -138,6 +145,7 @@ public class ConnectionPoolImpl implements ConnectionPool {
      * @date 2019-08-27
      */
     public void initPoole(){
+        logger.debug("[当前redis连接池大小为;]"+connectionPool.size());
         if (connectionPool.size() < minIdleSize) {
             lock.lock();
             try {
