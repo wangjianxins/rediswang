@@ -23,7 +23,7 @@ public class ConnectionPoolImpl implements ConnectionPool {
     private int port;
 
     //当前连接池
-    private volatile LinkedList<Connection> connectionPool = new LinkedList<>();
+    private volatile LinkedList<Connection> connectionPool = new LinkedList();
 
     private ReentrantLock lock = new ReentrantLock();
 
