@@ -1,6 +1,6 @@
 # RedisWang
 
-##这是一款简单高效的redis-java客户端
+## 这是一款简单高效的redis-java客户端
 
 
 目前是单机版本的redis连接，后续支持集群版本的连接
@@ -12,7 +12,7 @@
 持续更新中...
 
 
-##redis服务交互说明：
+## redis服务交互说明：
 
         1、当我们set wang（key） redis(value) 这个命令时候,需要传送给redis服务器指令为：
         *3\r\n$3\r\nSET\r\n$4\r\n\wang\r\n$5\r\nredis 
