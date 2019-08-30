@@ -21,6 +21,7 @@ public enum Command {
 
     expire,
 
+    pfadd,
 
-
+    pfcount
 }

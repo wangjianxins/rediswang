@@ -5,7 +5,6 @@ import com.wang.redis.config.RedisWangProperties;
 import com.wang.redis.connection.ConnectionPool;
 import com.wang.redis.connection.impl.ConnectionPoolImpl;
 import java.lang.reflect.InvocationTargetException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @Description 具体的一个执行client
@@ -74,5 +73,16 @@ public class RedisWangClient implements WangClient  {
         //nx不存在才set,xx存在才set
         //EX代表秒，PX代表毫秒
         return doExecute(Command.set,BooleanResult.class,key,1,"nx","ex",expires);
+    }
+
+    @Override
+    public int pfadd(String key, Object... param) {
+        return doExecute(Command.pfadd,IntResult.class,key,param);
+
+    }
+
+    @Override
+    public int pfcount(String key) {
+        return doExecute(Command.pfcount,IntResult.class,key);
     }
 }

@@ -10,7 +10,6 @@
 	<name>rediswang</name>
 	<url>https://github.com/wangjianxins/rediswang</url>
 
-
 	<developers>
 		<developer>
 			<name>Jianxin Wang</name>
@@ -76,7 +75,8 @@
 	</build>
 
 
-
+	<!--count:wangjianxin-->
+	<!--password:WJX123456789s%-->
 	<distributionManagement>
 		<snapshotRepository>
 			<id>oss</id>
