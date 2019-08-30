@@ -4,9 +4,8 @@ import com.wang.redis.Command.Command;
 import com.wang.redis.config.RedisWangProperties;
 import com.wang.redis.connection.ConnectionPool;
 import com.wang.redis.connection.impl.ConnectionPoolImpl;
-
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Description 具体的一个执行client
@@ -37,13 +36,6 @@ public class RedisWangClient implements WangClient  {
         return (T) commandInstance.doExecute(connectionPool.getConnection(),command,params);
     }
 
-    public static byte[] stringToBytes(String s){
-        try {
-            return s.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @Override
     public int del(String... key) {
@@ -75,6 +67,12 @@ public class RedisWangClient implements WangClient  {
     @Override
     public boolean expire(String key, int seconds) {
         return doExecute(Command.expire,BooleanResult.class,key);
+    }
 
+    @Override
+    public boolean tryLock(String key, long expires) {
+        //nx不存在才set,xx存在才set
+        //EX代表秒，PX代表毫秒
+        return doExecute(Command.set,BooleanResult.class,key,1,"nx","ex",expires);
     }
 }

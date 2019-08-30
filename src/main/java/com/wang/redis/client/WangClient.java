@@ -1,6 +1,5 @@
 package com.wang.redis.client;
-
-import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Description 
@@ -20,5 +19,11 @@ public interface WangClient {
     String get(String key);
 
     boolean expire(String key, int seconds);
+
+    /**
+     * 实现分布式锁
+     */
+    boolean tryLock(String key,long expires);
+
 
 }
