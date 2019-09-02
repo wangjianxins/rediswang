@@ -13,9 +13,11 @@
 ## 使用说明
     
 ### maven
-    <groupId>com.github.wangjianxins</groupId>
-    <artifactId>rediswang-spring-auto-starter</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <dependency>
+        <groupId>com.github.wangjianxins</groupId>
+        <artifactId>rediswang-spring-auto-starter</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </dependency>
 
 ### 配置文件：
     redis:
