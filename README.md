@@ -19,10 +19,9 @@
 
 ### 配置文件：
     redis:
-        wang:
-            address: XX
-            enbale: true
-            port: XX
+        address: XX
+        enbale: true
+        port: XX
 
 ### 依赖注入
     @Autowired
