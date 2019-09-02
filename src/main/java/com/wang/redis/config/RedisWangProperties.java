@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 //读取配置文件的配置
 
-@ConfigurationProperties(prefix = "redis.wang")
+@ConfigurationProperties(prefix = "redis")
 public class RedisWangProperties {
 
     private String address;

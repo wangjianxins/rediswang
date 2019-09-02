@@ -22,7 +22,7 @@ public class RedisWangAuthConfigure {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "redis.wang",value = "enabled",havingValue = "true")
+    @ConditionalOnProperty(prefix = "redis",value = "enabled",havingValue = "true")
     public RedisWangClient getClient(){
         return new RedisWangClient(redisWangProperties);
     }
