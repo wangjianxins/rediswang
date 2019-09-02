@@ -2,6 +2,8 @@ package com.wang.redis.util;
 
 import com.wang.redis.transmission.TransmissionData;
 
+import java.util.Arrays;
+
 /**
  * @Description 用于条件判断
  * @author Jianxin Wang

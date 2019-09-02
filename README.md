@@ -12,7 +12,12 @@
 持续更新中...
 
 
-## 使用说明（暂时sonatype还未上传，稍后会整上去）
+## 使用说明
+    
+    #maven
+    <groupId>com.github.wangjianxins</groupId>
+    <artifactId>rediswang-spring-auto-starter</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
 
     #配置文件：
     redis:
