@@ -46,6 +46,9 @@ public class ConnectionPoolImpl implements ConnectionPool {
         if(this.port <= 0){
             throw new RedisWangException("[redis-wang]redis的端口设置错误");
         }
+        logger.info("[redis-wang]redis配置完成");
+        //尝试连接是否配置数据正确
+        connectionPool.add(connection());
     }
 
     @Override
@@ -190,10 +193,23 @@ public class ConnectionPoolImpl implements ConnectionPool {
         }
         int len = minIdleSize - connectionPool.size();
         for(int i = 0; i < len; i++){
-//            Connection connection = new ConnectionImpl("127.0.0.1",6379);
-            Connection connection = new ConnectionImpl(address,port);
-            connectionPool.add(new ConnectionProxy(connection,this));
+            connectionPool.add(new ConnectionProxy(getConnection(),this));
             totalSize++;
         }
+    }
+
+    /**
+     * @Description 获得连接
+     * @author Jianxin Wang
+     * @date 2019-09-02
+     */
+    public Connection connection(){
+        Connection connection = null;
+        try {
+            connection = new ConnectionImpl(address,port);
+        } catch (IOException e) {
+            logger.error("[wang-redis]连接错误");
+        }
+        return connection;
     }
 }

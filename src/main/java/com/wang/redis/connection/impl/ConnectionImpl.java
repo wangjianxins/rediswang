@@ -28,7 +28,6 @@ public class ConnectionImpl implements Connection {
             socket.connect(new InetSocketAddress(address, port));
         }catch (Exception e){
             throw new RedisWangException("[redis-wang]连接redis失败："+e.getMessage());
-
             //激活重试连接
         }
         outputStream = new RedisOutputStream(socket.getOutputStream());
