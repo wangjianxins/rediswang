@@ -73,6 +73,7 @@ public class RedisWangClient implements WangClient  {
     public boolean tryLock(String key, long expires) {
         //nx不存在才set,xx存在才set
         //EX代表秒，PX代表毫秒
+        //解分布式锁，可以用到value值判断是否是自己的，如果说涉及到锁释放不了，高并发的，就用zk吧，redis还得考虑续命啥的，太麻烦了
         return doExecute(Command.set,BooleanResult.class,key,1,"nx","ex",expires);
     }
 
