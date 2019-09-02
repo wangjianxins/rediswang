@@ -14,19 +14,19 @@
 
 ## 使用说明
     
-    #maven
+### maven
     <groupId>com.github.wangjianxins</groupId>
     <artifactId>rediswang-spring-auto-starter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    #配置文件：
+### 配置文件：
     redis:
         wang:
             address: XX
             enbale: true
             port: XX
 
-    #依赖注入
+### 依赖注入
     @Autowired
     private RedisWangClient redisWangClient;
     
