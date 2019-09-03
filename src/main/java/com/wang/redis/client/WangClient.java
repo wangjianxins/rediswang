@@ -1,5 +1,9 @@
 package com.wang.redis.client;
-import java.util.concurrent.TimeUnit;
+
+
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
+import java.util.List;
 
 /**
  * @Description 
@@ -10,7 +14,7 @@ public interface WangClient {
     
     int del(String ...key);
 
-    boolean set(String key, Object value,long expires);
+    boolean setString(String key, String value,long expires);
 
     boolean mset(String[] keys,Object... values);
 
@@ -35,6 +39,28 @@ public interface WangClient {
      * hyperLogLog数据结构，获得count,精确度不准确
      */
     int pfcount(String key);
+
+
+    //list,这里没次的value最好都统一在list中，list<T>
+
+    Boolean setList(String key, List list,long expires);
+
+    Boolean setIndex(String key,int index,Object value);
+
+    Boolean leftPush(String key,Object value);
+
+    Boolean rightPush(String key,Object value);
+
+    /**
+     * @param blocking 是否阻塞等赛
+     */
+    Boolean leftPop(String key, Boolean blocking);
+
+    /**
+     * @param blocking 是否阻塞等赛
+     */
+    Boolean rightPop(String key,Boolean blocking);
+
 
 
 }

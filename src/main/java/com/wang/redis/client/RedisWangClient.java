@@ -7,6 +7,7 @@ import com.wang.redis.connection.ConnectionPool;
 import com.wang.redis.connection.impl.ConnectionPoolImpl;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 /**
  * @Description 具体的一个执行client
@@ -49,7 +50,7 @@ public class RedisWangClient implements WangClient  {
      * @date 2019-09-03
      */
     @Override
-    public boolean set(String key, java.lang.Object value,long expires) {
+    public boolean setString(String key, String value,long expires) {
         if (expires != 0) {
             return doExecute(Command.setex,BooleanResult.class,key,expires,value);
         } else {
@@ -111,6 +112,7 @@ public class RedisWangClient implements WangClient  {
         return doExecute(Command.set,BooleanResult.class,key,1,"nx","ex",expires);
     }
 
+    //===========================hyperloglog操作
     @Override
     public int pfadd(String key, Object... param) {
         return doExecute(Command.pfadd,IntResult.class,key,param);
@@ -121,4 +123,42 @@ public class RedisWangClient implements WangClient  {
     public int pfcount(String key) {
         return doExecute(Command.pfcount,IntResult.class,key);
     }
+
+
+    //===========================list操作
+    @Override
+    public Boolean setList(String key, List list, long expires) {
+        return null;
+    }
+
+    @Override
+    public Boolean setIndex(String key, int index, Object value) {
+        return null;
+    }
+
+    @Override
+    public Boolean leftPush(String key, Object value) {
+        return null;
+    }
+
+    @Override
+    public Boolean rightPush(String key, Object value) {
+        return null;
+    }
+
+    @Override
+    public Boolean leftPop(String key, Boolean blocking) {
+        return null;
+    }
+
+    @Override
+    public Boolean rightPop(String key, Boolean blocking) {
+        return null;
+    }
+
+    //===========================set操作
+
+
+    //===========================hash操作
+
 }
