@@ -1,6 +1,7 @@
-package com.wang.redis.client;
+package com.wang.redis.result;
 
 import com.wang.redis.Command.Command;
+import com.wang.redis.client.AbstractExecute;
 import com.wang.redis.io.RedisInputStream;
 
 /**

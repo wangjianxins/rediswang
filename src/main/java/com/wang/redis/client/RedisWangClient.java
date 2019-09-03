@@ -5,6 +5,9 @@ import com.wang.redis.Exception.RedisWangException;
 import com.wang.redis.config.RedisWangProperties;
 import com.wang.redis.connection.ConnectionPool;
 import com.wang.redis.connection.impl.ConnectionPoolImpl;
+import com.wang.redis.result.BooleanResult;
+import com.wang.redis.result.IntResult;
+import com.wang.redis.result.StringResult;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -41,7 +44,7 @@ public class RedisWangClient implements WangClient  {
 
     @Override
     public int del(String... key) {
-        return doExecute(Command.del,IntResult.class,key);
+        return doExecute(Command.del, IntResult.class,key);
     }
 
     /**
@@ -52,7 +55,7 @@ public class RedisWangClient implements WangClient  {
     @Override
     public boolean setString(String key, String value,long expires) {
         if (expires != 0) {
-            return doExecute(Command.setex,BooleanResult.class,key,expires,value);
+            return doExecute(Command.setex, BooleanResult.class,key,expires,value);
         } else {
             return doExecute(Command.set,BooleanResult.class,key,value);
         }
@@ -95,7 +98,7 @@ public class RedisWangClient implements WangClient  {
 
     @Override
     public String get(String key) {
-        return doExecute(Command.get,StringResult.class,key);
+        return doExecute(Command.get, StringResult.class,key);
 
     }
 
