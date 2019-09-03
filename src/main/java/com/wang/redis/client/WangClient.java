@@ -10,7 +10,7 @@ public interface WangClient {
     
     int del(String ...key);
 
-    boolean set(String key, Object value);
+    boolean set(String key, Object value,long expires);
 
     boolean mset(String[] keys,Object... values);
 

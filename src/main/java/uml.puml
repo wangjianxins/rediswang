@@ -1,0 +1,19 @@
+@startuml
+Alice -> Bob: Authentication Request
+Bob --> Alice: Authentication Response
+
+Alice -> Bob: Another authentication Request
+Alice <-- Bob: another authentication Response
+@enduml
+
+@startuml
+client -> RedisWangClient:进行set,get等操作
+RedisWangClient -> Execute: execute接口的doExecute方法记性执行
+Execute -> TransmissionData:TransmissionData在io里write已经装配好的指令只redis
+@enduml
+
+@startuml
+
+AbstractExecute -> StringResult:这里的StringResult是其中的一个子类（AbstractExecute的子类），根据不同类型触发不同子类的result
+StringResult -> client:AbstractExecute的子类已经都分装好了返回结果
+@enduml

@@ -1,6 +1,7 @@
 package com.wang.redis.client;
 
 import com.wang.redis.Command.Command;
+import com.wang.redis.Exception.RedisWangException;
 import com.wang.redis.config.RedisWangProperties;
 import com.wang.redis.connection.ConnectionPool;
 import com.wang.redis.connection.impl.ConnectionPoolImpl;
@@ -42,15 +43,48 @@ public class RedisWangClient implements WangClient  {
         return doExecute(Command.del,IntResult.class,key);
     }
 
+    /**
+     * @Description expires暂时只支持EX，秒级别
+     * @author Jianxin Wang
+     * @date 2019-09-03
+     */
     @Override
-    public boolean set(String key, java.lang.Object value) {
-        return doExecute(Command.set,BooleanResult.class,key,value);
+    public boolean set(String key, java.lang.Object value,long expires) {
+        if (expires != 0) {
+            return doExecute(Command.setex,BooleanResult.class,key,expires,value);
+        } else {
+            return doExecute(Command.set,BooleanResult.class,key,value);
+        }
     }
 
+    /**
+     * @Description 后续添加过期时间
+     * @author Jianxin Wang
+     * @date 2019-09-03
+     */
     @Override
     public boolean mset(String[] keys, java.lang.Object... values) {
-        return doExecute(Command.mset,BooleanResult.class,keys,values);
+        int klen = keys.length;
+        int vlen = keys.length;
+        int len = klen +vlen;
+        if(klen != vlen){
+            throw new RedisWangException("mset格式不正确,保证key,value个数对应");
+        }
+        Object[] mkv = new Object[len];
+        int kt = 0;
+        int vt = 0;
+        for (int i = 0; i< len; i++) {
+            if ((i+1) % 2 != 0) {
+                mkv[i] = keys[kt];
+                ++kt;
+            } else {
+                mkv[i] = values[vt];
+                ++vt;
+            }
 
+        }
+
+        return doExecute(Command.mset,BooleanResult.class,mkv);
     }
 
     @Override

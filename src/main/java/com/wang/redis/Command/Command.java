@@ -9,6 +9,8 @@ public enum Command {
 
     set,
 
+    setex,
+
     del,
 
     get,
