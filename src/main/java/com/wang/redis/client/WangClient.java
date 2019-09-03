@@ -50,12 +50,12 @@ public interface WangClient {
     Boolean rightPush(String key,Object value);
 
     /**
-     * @param blocking 是否阻塞等赛
+     * @param blocking 是否阻塞等待
      */
     Boolean leftPop(String key, Boolean blocking);
 
     /**
-     * @param blocking 是否阻塞等赛
+     * @param blocking 是否阻塞等待
      */
     Boolean rightPop(String key,Boolean blocking);
 
