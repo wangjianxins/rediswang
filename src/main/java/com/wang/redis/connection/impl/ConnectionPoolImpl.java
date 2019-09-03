@@ -193,7 +193,7 @@ public class ConnectionPoolImpl implements ConnectionPool {
         }
         int len = minIdleSize - connectionPool.size();
         for(int i = 0; i < len; i++){
-            connectionPool.add(new ConnectionProxy(getConnection(),this));
+            connectionPool.add(new ConnectionProxy(connection(),this));
             totalSize++;
         }
     }

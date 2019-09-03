@@ -1,6 +1,7 @@
 package com.wang.redis.client;
 
 import com.wang.redis.Command.Command;
+import com.wang.redis.Serializer.StringRedisSerializer;
 import com.wang.redis.connection.Connection;
 import com.wang.redis.io.RedisInputStream;
 import com.wang.redis.io.RedisOutputStream;
@@ -11,6 +12,7 @@ import java.util.List;
 
 public abstract class AbstractExecute<T> implements Execute<T> {
 
+    protected static StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
 
     @Override
     public T doExecute(Connection connection,Command command,Object ...params){

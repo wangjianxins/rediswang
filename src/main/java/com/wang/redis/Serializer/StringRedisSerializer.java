@@ -11,8 +11,7 @@ import java.nio.charset.Charset;
  */
 public class StringRedisSerializer implements Serializer<String>{
 
-    private final Charset charset = Charset.forName("UTF-8");
-
+    private static final Charset charset = Charset.forName("UTF-8");
 
     @Override
     public byte[] serialize(String s) throws UnsupportedEncodingException {
