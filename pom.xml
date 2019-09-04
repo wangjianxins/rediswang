@@ -5,7 +5,19 @@
 
 	<groupId>com.github.wangjianxins</groupId>
 	<artifactId>rediswang-spring-auto-starter</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.0-SNAPSHOT</version>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>8</source>
+					<target>8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 	<name>rediswang</name>
 	<url>https://github.com/wangjianxins/rediswang</url>
@@ -52,69 +64,13 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
 		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.58</version>
+		</dependency>
+
 	</dependencies>
-
-<!--	<profiles>-->
-<!--		<profile>-->
-<!--			<id>release</id>-->
-<!--			<activation>-->
-<!--				<property>-->
-<!--					<name>performRelease</name>-->
-<!--					<value>true</value>-->
-<!--				</property>-->
-<!--			</activation>-->
-<!--			<build>-->
-<!--				<plugins>-->
-<!--					<plugin>-->
-<!--						<groupId>org.apache.maven.plugins</groupId>-->
-<!--						<artifactId>maven-source-plugin</artifactId>-->
-<!--						<version>2.2.1</version>-->
-<!--						<executions>-->
-<!--							<execution>-->
-<!--								<id>attach-sources</id>-->
-<!--								<goals>-->
-<!--									<goal>jar-no-fork</goal>-->
-<!--								</goals>-->
-<!--							</execution>-->
-<!--						</executions>-->
-<!--					</plugin>-->
-<!--					&lt;!&ndash; 生成javadoc文档包的插件 &ndash;&gt;-->
-<!--					<plugin>-->
-<!--						<groupId>org.apache.maven.plugins</groupId>-->
-<!--						<artifactId>maven-javadoc-plugin</artifactId>-->
-<!--						<version>3.0.1</version>-->
-<!--						<executions>-->
-<!--							<execution>-->
-<!--								<id>attach-javadocs</id>-->
-<!--								<goals>-->
-<!--									<goal>jar</goal>-->
-<!--								</goals>-->
-<!--								<configuration>-->
-<!--								</configuration>-->
-<!--							</execution>-->
-<!--						</executions>-->
-<!--						<configuration>-->
-<!--							<doclint>none</doclint>-->
-<!--						</configuration>-->
-<!--					</plugin>-->
-<!--&lt;!&ndash;					<plugin>&ndash;&gt;-->
-<!--&lt;!&ndash;						<groupId>org.apache.maven.plugins</groupId>&ndash;&gt;-->
-<!--&lt;!&ndash;						<artifactId>maven-gpg-plugin</artifactId>&ndash;&gt;-->
-<!--&lt;!&ndash;						<version>1.6</version>&ndash;&gt;-->
-<!--&lt;!&ndash;						<executions>&ndash;&gt;-->
-<!--&lt;!&ndash;							<execution>&ndash;&gt;-->
-<!--&lt;!&ndash;								<phase>verify</phase>&ndash;&gt;-->
-<!--&lt;!&ndash;								<goals>&ndash;&gt;-->
-<!--&lt;!&ndash;									<goal>sign</goal>&ndash;&gt;-->
-<!--&lt;!&ndash;								</goals>&ndash;&gt;-->
-<!--&lt;!&ndash;							</execution>&ndash;&gt;-->
-<!--&lt;!&ndash;						</executions>&ndash;&gt;-->
-<!--&lt;!&ndash;					</plugin>&ndash;&gt;-->
-<!--				</plugins>-->
-<!--			</build>-->
-<!--		</profile>-->
-<!--	</profiles>-->
-
 
 	<licenses>
 		<license>

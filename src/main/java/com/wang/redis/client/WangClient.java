@@ -1,6 +1,8 @@
 package com.wang.redis.client;
 
 
+import com.wang.redis.result.IntResult;
+
 import java.util.List;
 
 /**
@@ -18,9 +20,9 @@ public interface WangClient {
 
     int incr(String key);
 
-    String get(String key);
+    String getString(String key);
 
-    boolean expire(String key, int seconds);
+    boolean expire(String key, long seconds);
 
     /**
      * 实现分布式锁
@@ -39,25 +41,27 @@ public interface WangClient {
     int pfcount(String key);
 
 
-    //list,这里没次的value最好都统一在list中，list<T>
+    //list
 
-    Boolean setList(String key, List list,long expires);
+    Boolean setListIndex(String key,int index,Object value);
 
-    Boolean setIndex(String key,int index,Object value);
+    Object getListIndex(String key,int index);
 
-    Boolean leftPush(String key,Object value);
+    List getRangeList(String key,int start,int end);
 
-    Boolean rightPush(String key,Object value);
+    int leftPush(String key, Object value);
 
-    /**
-     * @param blocking 是否阻塞等待
-     */
-    Boolean leftPop(String key, Boolean blocking);
+    int rightPush(String key,Object value);
 
     /**
      * @param blocking 是否阻塞等待
      */
-    Boolean rightPop(String key,Boolean blocking);
+    Object leftPop(String key, Boolean blocking);
+
+    /**
+     * @param blocking 是否阻塞等待
+     */
+    Object rightPop(String key,Boolean blocking);
 
 
 

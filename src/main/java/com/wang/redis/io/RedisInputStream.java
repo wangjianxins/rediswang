@@ -1,5 +1,6 @@
 package com.wang.redis.io;
 
+import com.wang.redis.Exception.RedisWangException;
 import org.apache.log4j.Logger;
 
 import java.io.ByteArrayOutputStream;
@@ -154,5 +155,36 @@ public class RedisInputStream extends FilterInputStream {
         System.arraycopy(buf, count, line, 0, N);
         count = pos;
         return line;
+    }
+
+    public long readLongCrLf() throws IOException {
+        final byte[] buf = this.buf;
+
+        ensureFill();
+
+        final boolean isNeg = buf[count] == '-';
+        if (isNeg) {
+            ++count;
+        }
+
+        long value = 0;
+        while (true) {
+            ensureFill();
+
+            final int b = buf[count++];
+            if (b == '\r') {
+                ensureFill();
+
+                if (buf[count++] != '\n') {
+                    throw new RedisWangException("不合法的返回字节数据");
+                }
+
+                break;
+            } else {
+                value = value * 10 + b - '0';
+            }
+        }
+
+        return (isNeg ? -value : value);
     }
 }

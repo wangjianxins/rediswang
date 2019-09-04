@@ -5,9 +5,7 @@ import com.wang.redis.Exception.RedisWangException;
 import com.wang.redis.config.RedisWangProperties;
 import com.wang.redis.connection.ConnectionPool;
 import com.wang.redis.connection.impl.ConnectionPoolImpl;
-import com.wang.redis.result.BooleanResult;
-import com.wang.redis.result.IntResult;
-import com.wang.redis.result.StringResult;
+import com.wang.redis.result.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -97,14 +95,14 @@ public class RedisWangClient implements WangClient  {
     }
 
     @Override
-    public String get(String key) {
+    public String getString(String key) {
         return doExecute(Command.get, StringResult.class,key);
 
     }
 
     @Override
-    public boolean expire(String key, int seconds) {
-        return doExecute(Command.expire,BooleanResult.class,key);
+    public boolean expire(String key, long seconds) {
+        return doExecute(Command.expire,BooleanResult.class,key,seconds);
     }
 
     @Override
@@ -129,34 +127,40 @@ public class RedisWangClient implements WangClient  {
 
 
     //===========================list操作
+    //针对list中某个item修改
     @Override
-    public Boolean setList(String key, List list, long expires) {
-        return null;
+    public Boolean setListIndex(String key, int index, Object value) {
+        return doExecute(Command.lset, BooleanResult.class,key,value);
     }
 
     @Override
-    public Boolean setIndex(String key, int index, Object value) {
-        return null;
+    public Object getListIndex(String key, int index) {
+        return doExecute(Command.lindex, ListResult.class,key);
     }
 
     @Override
-    public Boolean leftPush(String key, Object value) {
-        return null;
+    public List getRangeList(String key, int start, int end) {
+        return doExecute(Command.lrange, ListResult.class,key,start,end);
     }
 
     @Override
-    public Boolean rightPush(String key, Object value) {
-        return null;
+    public int leftPush(String key, Object value) {
+        return doExecute(Command.lpush, IntResult.class,key,value);
     }
 
     @Override
-    public Boolean leftPop(String key, Boolean blocking) {
-        return null;
+    public int rightPush(String key, Object value) {
+        return doExecute(Command.rpush, IntResult.class,key,value);
     }
 
     @Override
-    public Boolean rightPop(String key, Boolean blocking) {
-        return null;
+    public Object leftPop(String key, Boolean blocking) {
+        return doExecute(Command.lpop, ObjectResult.class,key);
+    }
+
+    @Override
+    public Object rightPop(String key, Boolean blocking) {
+        return doExecute(Command.rpop, ObjectResult.class,key);
     }
 
     //===========================set操作

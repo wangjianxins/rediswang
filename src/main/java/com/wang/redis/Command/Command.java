@@ -25,5 +25,21 @@ public enum Command {
 
     pfadd,
 
-    pfcount
+    pfcount,
+
+
+    lindex,
+
+    lrange,
+
+    lset,
+
+    lpush,
+
+    rpush,
+
+    lpop,
+
+    rpop,
+
 }

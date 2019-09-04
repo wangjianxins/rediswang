@@ -1,5 +1,6 @@
 package com.wang.redis.client;
 
+import com.alibaba.fastjson.JSON;
 import com.wang.redis.Command.Command;
 import com.wang.redis.Serializer.StringRedisSerializer;
 import com.wang.redis.connection.Connection;
@@ -47,7 +48,8 @@ public abstract class AbstractExecute<T> implements Execute<T> {
                 byte[][] extendArgumentBytes = new byte[arguments.length + list.size() - 1][];
                 System.arraycopy(argumentBytes, 0, extendArgumentBytes, 0, i);
                 for (int j = 0; j < list.size(); j++) {
-                    extendArgumentBytes[i++] = stringToBytes(list.get(j).toString());
+                    //需要序列化哦
+                    extendArgumentBytes[i++] = JSON.toJSONString(list.get(j)).getBytes("UTF-8");
                 }
                 argumentBytes = extendArgumentBytes;
             } else if (arguments[i].getClass().isArray()) {
@@ -76,5 +78,7 @@ public abstract class AbstractExecute<T> implements Execute<T> {
             throw new RuntimeException(e);
         }
     }
+
+
 
 }
