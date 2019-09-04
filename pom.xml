@@ -5,7 +5,7 @@
 
 	<groupId>com.github.wangjianxins</groupId>
 	<artifactId>rediswang-spring-auto-starter</artifactId>
-	<version>1.0.4-SNAPSHOT</version>
+	<version>1.0.0</version>
 
 	<name>rediswang</name>
 	<url>https://github.com/wangjianxins/rediswang</url>
