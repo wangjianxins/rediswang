@@ -2,7 +2,7 @@ package com.wang.redis.client;
 
 import com.alibaba.fastjson.JSON;
 import com.wang.redis.Command.Command;
-import com.wang.redis.Serializer.StringRedisSerializer;
+import com.wang.redis.Serializer.FasterSerializer;
 import com.wang.redis.connection.Connection;
 import com.wang.redis.io.RedisInputStream;
 import com.wang.redis.io.RedisOutputStream;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public abstract class AbstractExecute<T> implements Execute<T> {
 
-    protected static StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
+    protected static FasterSerializer fasterSerializer = new FasterSerializer();
 
     @Override
     public T doExecute(Connection connection,Command command,Object ...params){
@@ -49,7 +49,11 @@ public abstract class AbstractExecute<T> implements Execute<T> {
                 System.arraycopy(argumentBytes, 0, extendArgumentBytes, 0, i);
                 for (int j = 0; j < list.size(); j++) {
                     //需要序列化哦
-                    extendArgumentBytes[i++] = JSON.toJSONString(list.get(j)).getBytes("UTF-8");
+                    if (list.get(j) instanceof String || list.get(j) instanceof Integer) {
+                        extendArgumentBytes[i++] = stringToBytes(list.get(j).toString());
+                    } else  {
+                        extendArgumentBytes[i++] = fasterSerializer.serialize(list.get(j));
+                    }
                 }
                 argumentBytes = extendArgumentBytes;
             } else if (arguments[i].getClass().isArray()) {
@@ -57,7 +61,11 @@ public abstract class AbstractExecute<T> implements Execute<T> {
                 byte[][] extendArgumentBytes = new byte[arguments.length + array.length - 1][];
                 System.arraycopy(argumentBytes, 0, extendArgumentBytes, 0, i);
                 for (int j = 0; j < array.length; j++) {
-                    extendArgumentBytes[i++] = stringToBytes(array[j].toString());
+                    if(array[j] instanceof String || array[j] instanceof Integer){
+                        extendArgumentBytes[i++] = stringToBytes(array[j].toString());
+                    } else {
+                        extendArgumentBytes[i++] = fasterSerializer.serialize(array[j]);
+                    }
                 }
                 argumentBytes = extendArgumentBytes;
             } else {

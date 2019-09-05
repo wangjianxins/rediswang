@@ -1,7 +1,6 @@
 package com.wang.redis.result;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.wang.redis.Command.Command;
 import com.wang.redis.Exception.RedisWangException;
 import com.wang.redis.client.AbstractExecute;
@@ -71,7 +70,7 @@ public class ObjectResult extends AbstractExecute<List> {
         // read 2 more bytes for the command delimiter
         in.readByte();
         in.readByte();
-        return JSON.parse(read);
+        return fasterSerializer.deserialize(read);
     }
 
     private static List<Object> processMultiBulkReply(final RedisInputStream in) throws IOException {

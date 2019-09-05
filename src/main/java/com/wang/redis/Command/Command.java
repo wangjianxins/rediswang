@@ -27,7 +27,6 @@ public enum Command {
 
     pfcount,
 
-
     lindex,
 
     lrange,
@@ -41,5 +40,12 @@ public enum Command {
     lpop,
 
     rpop,
+
+
+    hset,
+    hmset,
+    hmget,
+    hgetall,
+    hget,
 
 }

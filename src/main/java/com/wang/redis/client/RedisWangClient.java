@@ -2,13 +2,16 @@ package com.wang.redis.client;
 
 import com.wang.redis.Command.Command;
 import com.wang.redis.Exception.RedisWangException;
+import com.wang.redis.Serializer.FasterSerializer;
+import com.wang.redis.Serializer.Serializer;
 import com.wang.redis.config.RedisWangProperties;
 import com.wang.redis.connection.ConnectionPool;
 import com.wang.redis.connection.impl.ConnectionPoolImpl;
 import com.wang.redis.result.*;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Description 具体的一个执行client
@@ -19,11 +22,21 @@ public class RedisWangClient implements WangClient  {
 
     protected ConnectionPool connectionPool;
 
+    protected Serializer serializer;
+
     public RedisWangClient(RedisWangProperties redisWangProperties){
         connectionPool = new ConnectionPoolImpl(redisWangProperties);
     }
 
-    public <T>T doExecute(Command command,Class<? extends Execute<T>> execute ,Object ...params){
+    public Serializer getSerializer() {
+        return serializer;
+    }
+
+    public void setSerializer(Serializer serializer) {
+        this.serializer = serializer;
+    }
+
+    public <T>T doExecute(Command command, Class<? extends Execute<T>> execute , Object ...params){
         Execute commandInstance = null;
         try {
             commandInstance = execute.getConstructor(new Class<?>[]{}).newInstance();
@@ -161,6 +174,46 @@ public class RedisWangClient implements WangClient  {
     @Override
     public Object rightPop(String key, Boolean blocking) {
         return doExecute(Command.rpop, ObjectResult.class,key);
+    }
+
+
+    //===========================hash操作
+    @Override
+    public int hset(String key, String filed,Object o) {
+        return doExecute(Command.hset, IntResult.class,key,filed,o);
+    }
+
+    /**
+     * @param o 可以是Map<String,Object>，或者是我们的实体类
+     */
+    @Override
+    public Boolean hmset(String key, Object o) {
+        if (o instanceof Map) {
+            return doExecute(Command.hmset, BooleanResult.class,key,((Map) o).keySet().toArray(),((Map) o).values().toArray());
+        } else  {
+            Field[] fields = o.getClass().getDeclaredFields();
+            //这里传递给redis的值是一个大数组，重点一个。最后面算len是算这个大数组的length的。
+            Object[] v = new Object[fields.length * 2];
+            for(int i = 0 ; i < fields.length ; i++) {
+                fields[i].setAccessible(true);
+                int j = 0;
+                if(i != 0){
+                    j = i+1;
+                }
+                v[j] = fields[i].getName();
+                try {
+                    v[j+1] = fields[i].get(o);
+                } catch (IllegalAccessException e) {
+                    throw new RedisWangException("[redis-wang] hmset 无法获取参数 o 的属性值");
+                }
+            }
+            return doExecute(Command.hmset, BooleanResult.class,key,v);
+        }
+    }
+
+    @Override
+    public Object hget(String key,String filed) {
+        return doExecute(Command.hget, ObjectResult.class,key,filed);
     }
 
     //===========================set操作

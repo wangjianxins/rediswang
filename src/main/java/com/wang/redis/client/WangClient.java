@@ -64,5 +64,13 @@ public interface WangClient {
     Object rightPop(String key,Boolean blocking);
 
 
+    //hash
+    int hset(String key,String filed,Object o);
+
+    Boolean hmset(String key,Object o);
+
+    Object hget(String key,String filed);
+
+
 
 }
