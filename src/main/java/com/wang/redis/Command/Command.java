@@ -41,7 +41,9 @@ public enum Command {
 
     rpop,
 
-    //hash
+    /**
+     * hash
+     */
     hset,
     hmset,
     hmget,
@@ -51,7 +53,9 @@ public enum Command {
     hkeys,
     hvals,
 
-    //set
+    /**
+     * set
+     */
     sadd,
     srem,
     //个数
@@ -69,7 +73,9 @@ public enum Command {
     //求俩个set的差
     sdiff,
 
-    //zset
+    /**
+     * zset
+     */
     zadd,
     //个数
     zcard,
@@ -88,5 +94,14 @@ public enum Command {
     zrevrangebyscore,
     //指定范围计算count,zcount key min max
     zcount,
+
+
+    /**
+     * bitmaps
+     */
+    //setbit key offset value
+    setbit,
+    //getbit key offset
+    getbit,
 
 }
