@@ -2,7 +2,6 @@ package com.wang.redis.client;
 
 import com.wang.redis.Command.Command;
 import com.wang.redis.Exception.RedisWangException;
-import com.wang.redis.Serializer.FasterSerializer;
 import com.wang.redis.Serializer.Serializer;
 import com.wang.redis.config.RedisWangProperties;
 import com.wang.redis.connection.ConnectionPool;
@@ -64,7 +63,7 @@ public class RedisWangClient implements WangClient  {
      * @date 2019-09-03
      */
     @Override
-    public boolean setString(String key, String value,long expires) {
+    public boolean set(String key, String value,long expires) {
         if (expires != 0) {
             return doExecute(Command.setex, BooleanResult.class,key,expires,value);
         } else {
@@ -103,12 +102,17 @@ public class RedisWangClient implements WangClient  {
     }
 
     @Override
+    public List<String> mget(String... keys) {
+        return doExecute(Command.mget, ObjectResult.class,keys);
+    }
+
+    @Override
     public int incr(String key) {
         return doExecute(Command.incr,IntResult.class,key);
     }
 
     @Override
-    public String getString(String key) {
+    public String get(String key) {
         return doExecute(Command.get, StringResult.class,key);
 
     }
@@ -153,7 +157,7 @@ public class RedisWangClient implements WangClient  {
 
     @Override
     public List getRangeList(String key, int start, int end) {
-        return doExecute(Command.lrange, ListResult.class,key,start,end);
+        return doExecute(Command.lrange, ObjectResult.class,key,start,end);
     }
 
     @Override
@@ -189,7 +193,17 @@ public class RedisWangClient implements WangClient  {
     @Override
     public Boolean hmset(String key, Object o) {
         if (o instanceof Map) {
-            return doExecute(Command.hmset, BooleanResult.class,key,((Map) o).keySet().toArray(),((Map) o).values().toArray());
+            Object[] r = new Object[((Map) o).size() * 2];
+            int i = 0;
+            for(Map.Entry m :  ((Map<Object,Object>) o).entrySet()){
+                Object k = m.getKey();
+                Object v = m.getValue();
+                r[i] = k;
+                ++i;
+                r[i] = v;
+                ++i;
+            }
+            return doExecute(Command.hmset, BooleanResult.class,key,r);
         } else  {
             Field[] fields = o.getClass().getDeclaredFields();
             //这里传递给redis的值是一个大数组，重点一个。最后面算len是算这个大数组的length的。

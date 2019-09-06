@@ -35,6 +35,8 @@ public abstract class AbstractExecute<T> implements Execute<T> {
 
 
     protected static void send(RedisOutputStream outputStream, Command command, Object... arguments) throws Exception {
+        //key这里不走json的格式化
+        arguments[0] = stringToBytes((String) arguments[0]);
         String commandString = command.name();
         if (command.name().indexOf(TransmissionData.COMMAND_SEPARATOR) > 0) {
             commandString = command.name().replace(TransmissionData.COMMAND_SEPARATOR, TransmissionData.SPACE);
@@ -49,11 +51,7 @@ public abstract class AbstractExecute<T> implements Execute<T> {
                 System.arraycopy(argumentBytes, 0, extendArgumentBytes, 0, i);
                 for (int j = 0; j < list.size(); j++) {
                     //需要序列化哦
-                    if (list.get(j) instanceof String || list.get(j) instanceof Integer) {
-                        extendArgumentBytes[i++] = stringToBytes(list.get(j).toString());
-                    } else  {
-                        extendArgumentBytes[i++] = fasterSerializer.serialize(list.get(j));
-                    }
+                    extendArgumentBytes[i++] = fasterSerializer.serialize(list.get(j));
                 }
                 argumentBytes = extendArgumentBytes;
             } else if (arguments[i].getClass().isArray()) {
@@ -61,15 +59,11 @@ public abstract class AbstractExecute<T> implements Execute<T> {
                 byte[][] extendArgumentBytes = new byte[arguments.length + array.length - 1][];
                 System.arraycopy(argumentBytes, 0, extendArgumentBytes, 0, i);
                 for (int j = 0; j < array.length; j++) {
-                    if(array[j] instanceof String || array[j] instanceof Integer){
-                        extendArgumentBytes[i++] = stringToBytes(array[j].toString());
-                    } else {
-                        extendArgumentBytes[i++] = fasterSerializer.serialize(array[j]);
-                    }
+                    extendArgumentBytes[i++] = fasterSerializer.serialize(array[j]);
                 }
                 argumentBytes = extendArgumentBytes;
             } else {
-                argumentBytes[i] = stringToBytes(arguments[i].toString());
+                argumentBytes[i] = fasterSerializer.serialize(arguments[i].toString());
             }
         }
         TransmissionData.sendCommand(outputStream, stringToBytes(commandString), argumentBytes);

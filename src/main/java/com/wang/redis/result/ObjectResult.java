@@ -24,7 +24,10 @@ public class ObjectResult extends AbstractExecute<List> {
 
     @Override
     protected Object receive(RedisInputStream inputStream, Command command, Object... arguments) throws Exception {
+        return this.process(inputStream);
+    }
 
+    public Object process(RedisInputStream inputStream) throws Exception{
         //需要判断不同的情况
         final byte b = inputStream.readByte();
         if (b == PLUS_BYTE) {
@@ -40,9 +43,7 @@ public class ObjectResult extends AbstractExecute<List> {
         } else {
             throw new RedisWangException("接收错误数据");
         }
-
     }
-
 
     public static byte[] processStatusCodeReply(RedisInputStream in){
         try {
@@ -73,7 +74,7 @@ public class ObjectResult extends AbstractExecute<List> {
         return fasterSerializer.deserialize(read);
     }
 
-    private static List<Object> processMultiBulkReply(final RedisInputStream in) throws IOException {
+    private List<Object> processMultiBulkReply(final RedisInputStream in) throws IOException {
         String result = in.readLine();
         int len = Integer.valueOf(result.replace("*","").trim());
 
@@ -83,7 +84,8 @@ public class ObjectResult extends AbstractExecute<List> {
         final List<Object> ret = new ArrayList<Object>(len);
         for (int i = 0; i < len; i++) {
             try {
-                ret.add(in.readLine());
+                //再去判断他item什么类型，一般不会是list的，在导致递归一次
+                ret.add(process(in));
             } catch (Exception e) {
                 ret.add(e);
             }

@@ -14,13 +14,16 @@ public interface WangClient {
     
     int del(String ...key);
 
-    boolean setString(String key, String value,long expires);
+    boolean set(String key, String value,long expires);
+
+    String get(String key);
 
     boolean mset(String[] keys,Object... values);
 
+    List<String> mget(String... keys);
+
     int incr(String key);
 
-    String getString(String key);
 
     boolean expire(String key, long seconds);
 
