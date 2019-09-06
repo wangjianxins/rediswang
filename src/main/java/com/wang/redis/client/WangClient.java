@@ -1,9 +1,10 @@
 package com.wang.redis.client;
 
 
-import com.wang.redis.result.IntResult;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @Description 
@@ -45,7 +46,6 @@ public interface WangClient {
 
 
     //list
-
     Boolean setListIndex(String key,int index,Object value);
 
     Object getListIndex(String key,int index);
@@ -70,10 +70,16 @@ public interface WangClient {
     //hash
     int hset(String key,String filed,Object o);
 
-    Boolean hmset(String key,Object o);
+    Boolean hsetObject(String key,Object o);
 
     Object hget(String key,String filed);
 
+    int hdel(String key,String filed);
 
+    List<Object> hkeys(String key);
+
+    List<Object> hvals(String key);
+
+    Map<String,Object> hgetall (String key);
 
 }

@@ -1,6 +1,5 @@
 package com.wang.redis.result;
 
-import com.alibaba.fastjson.JSON;
 import com.wang.redis.Command.Command;
 import com.wang.redis.Exception.RedisWangException;
 import com.wang.redis.client.AbstractExecute;

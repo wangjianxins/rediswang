@@ -191,7 +191,7 @@ public class RedisWangClient implements WangClient  {
      * @param o 可以是Map<String,Object>，或者是我们的实体类
      */
     @Override
-    public Boolean hmset(String key, Object o) {
+    public Boolean hsetObject(String key, Object o) {
         if (o instanceof Map) {
             Object[] r = new Object[((Map) o).size() * 2];
             int i = 0;
@@ -228,6 +228,27 @@ public class RedisWangClient implements WangClient  {
     @Override
     public Object hget(String key,String filed) {
         return doExecute(Command.hget, ObjectResult.class,key,filed);
+    }
+
+    @Override
+    public int hdel(String key, String filed) {
+        return doExecute(Command.hdel, IntResult.class,key,filed);
+    }
+
+    @Override
+    public List<Object> hkeys(String key) {
+        return doExecute(Command.hkeys, ObjectResult.class,key);
+
+    }
+
+    @Override
+    public List<Object> hvals(String key) {
+        return doExecute(Command.hvals, ObjectResult.class,key);
+    }
+
+    @Override
+    public Map<String, Object> hgetall(String key) {
+        throw new RedisWangException("暂未实现");
     }
 
     //===========================set操作

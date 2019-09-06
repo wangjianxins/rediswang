@@ -47,5 +47,8 @@ public enum Command {
     hmget,
     hgetall,
     hget,
+    hdel,
+    hkeys,
+    hvals,
 
 }
