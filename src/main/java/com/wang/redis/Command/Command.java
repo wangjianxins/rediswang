@@ -41,7 +41,7 @@ public enum Command {
 
     rpop,
 
-
+    //hash
     hset,
     hmset,
     hmget,
@@ -50,5 +50,43 @@ public enum Command {
     hdel,
     hkeys,
     hvals,
+
+    //set
+    sadd,
+    srem,
+    //个数
+    scard,
+    //是否存在
+    sismember,
+    //弹出一个
+    spop,
+    //随机选择一个，不会删除
+    srandmerber,
+    //getall
+    smembers,
+    //求俩个set的交集
+    sunion,
+    //求俩个set的差
+    sdiff,
+
+    //zset
+    zadd,
+    //个数
+    zcard,
+    //获得某个成员的值
+    zscore,
+    zrem,
+    //zincrby key 1 filed自增多少
+    zincrby,
+    //正序排列，zrange zset 0 1
+    zrange,
+    //倒叙排列
+    zrevrange,
+    //根据score返回范围，给定分值范围，zrangebyscore zset 0 14
+    zrangebyscore,
+    //根据score倒序排列，给定分值范围
+    zrevrangebyscore,
+    //指定范围计算count,zcount key min max
+    zcount,
 
 }
