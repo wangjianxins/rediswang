@@ -17,7 +17,7 @@ import java.util.*;
  * @author Jianxin Wang
  * @date 2019-08-28
  */
-public class RedisWangClient implements WangClient  {
+public class RedisWangClient extends DefaultClient implements SetClient,BitMapsClient{
 
     protected ConnectionPool connectionPool;
 

@@ -4,14 +4,13 @@ package com.wang.redis.client;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @Description 
  * @author Jianxin Wang
  * @date 2019-08-28
  */
-public interface WangClient {
+public interface BaseClient {
     
     int del(String ...key);
 
