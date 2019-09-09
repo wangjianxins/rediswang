@@ -1,121 +1,38 @@
 package com.wang.redis.client;
 
-import java.util.List;
-import java.util.Map;
+import com.wang.redis.Command.Command;
+import com.wang.redis.connection.ConnectionPool;
 
+import java.lang.reflect.InvocationTargetException;
+
+/**
+ * @Description 默认实现类
+ * @author Jianxin Wang
+ * @date 2019-09-09
+ */
 public abstract class DefaultClient implements BaseClient {
 
-    @Override
-    public abstract int del(String... key);
+    protected ConnectionPool connectionPool;
 
-    @Override
-    public abstract boolean set(String key, String value, long expires);
-
-    @Override
-    public abstract String get(String key);
-
-    @Override
-    public boolean mset(String[] keys, Object... values) {
-        return false;
+    public DefaultClient(ConnectionPool connectionPool){
+        this.connectionPool = connectionPool;
     }
 
-    @Override
-    public List<String> mget(String... keys) {
-        return null;
+    public <T>T doExecute(Command command, Class<? extends Execute<T>> execute , Object ...params){
+        Execute commandInstance = null;
+        try {
+            commandInstance = execute.getConstructor(new Class<?>[]{}).newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+
+        return (T) commandInstance.doExecute(connectionPool.getConnection(),command,params);
     }
 
-    @Override
-    public int incr(String key) {
-        return 0;
-    }
-
-    @Override
-    public boolean expire(String key, long seconds) {
-        return false;
-    }
-
-    @Override
-    public boolean tryLock(String key, long expires) {
-        return false;
-    }
-
-    @Override
-    public int pfadd(String key, Object... param) {
-        return 0;
-    }
-
-    @Override
-    public int pfcount(String key) {
-        return 0;
-    }
-
-    @Override
-    public Boolean setListIndex(String key, int index, Object value) {
-        return null;
-    }
-
-    @Override
-    public Object getListIndex(String key, int index) {
-        return null;
-    }
-
-    @Override
-    public List getRangeList(String key, int start, int end) {
-        return null;
-    }
-
-    @Override
-    public int leftPush(String key, Object value) {
-        return 0;
-    }
-
-    @Override
-    public int rightPush(String key, Object value) {
-        return 0;
-    }
-
-    @Override
-    public Object leftPop(String key, Boolean blocking) {
-        return null;
-    }
-
-    @Override
-    public Object rightPop(String key, Boolean blocking) {
-        return null;
-    }
-
-    @Override
-    public int hset(String key, String filed, Object o) {
-        return 0;
-    }
-
-    @Override
-    public Boolean hsetObject(String key, Object o) {
-        return null;
-    }
-
-    @Override
-    public Object hget(String key, String filed) {
-        return null;
-    }
-
-    @Override
-    public int hdel(String key, String filed) {
-        return 0;
-    }
-
-    @Override
-    public List<Object> hkeys(String key) {
-        return null;
-    }
-
-    @Override
-    public List<Object> hvals(String key) {
-        return null;
-    }
-
-    @Override
-    public Map<String, Object> hgetall(String key) {
-        return null;
-    }
 }

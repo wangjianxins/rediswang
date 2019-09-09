@@ -82,6 +82,8 @@ public enum Command {
     //获得某个成员的值
     zscore,
     zrem,
+    zrank,
+    zrevrank,
     //zincrby key 1 filed自增多少
     zincrby,
     //正序排列，zrange zset 0 1

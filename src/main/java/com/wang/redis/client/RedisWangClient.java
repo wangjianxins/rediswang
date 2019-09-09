@@ -2,14 +2,11 @@ package com.wang.redis.client;
 
 import com.wang.redis.Command.Command;
 import com.wang.redis.Exception.RedisWangException;
-import com.wang.redis.Serializer.Serializer;
 import com.wang.redis.config.RedisWangProperties;
-import com.wang.redis.connection.ConnectionPool;
 import com.wang.redis.connection.impl.ConnectionPoolImpl;
 import com.wang.redis.result.*;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -17,40 +14,19 @@ import java.util.*;
  * @author Jianxin Wang
  * @date 2019-08-28
  */
-public class RedisWangClient extends DefaultClient implements SetClient,BitMapsClient{
-
-    protected ConnectionPool connectionPool;
-
-    protected Serializer serializer;
+public class RedisWangClient extends DefaultClient{
 
     public RedisWangClient(RedisWangProperties redisWangProperties){
-        connectionPool = new ConnectionPoolImpl(redisWangProperties);
+        super(new ConnectionPoolImpl(redisWangProperties));
     }
 
-    public Serializer getSerializer() {
-        return serializer;
+    public SetClient bindSetClient(String key) {
+        return new DefaultSetClient(key,this);
     }
 
-    public void setSerializer(Serializer serializer) {
-        this.serializer = serializer;
+    public ZsetClient bindZsetClient(String key){
+        return new DefaultZsetClient(key,this);
     }
-
-    public <T>T doExecute(Command command, Class<? extends Execute<T>> execute , Object ...params){
-        Execute commandInstance = null;
-        try {
-            commandInstance = execute.getConstructor(new Class<?>[]{}).newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        return (T) commandInstance.doExecute(connectionPool.getConnection(),command,params);
-    }
-
 
     @Override
     public int del(String... key) {
@@ -103,7 +79,7 @@ public class RedisWangClient extends DefaultClient implements SetClient,BitMapsC
 
     @Override
     public List<String> mget(String... keys) {
-        return doExecute(Command.mget, ObjectResult.class,keys);
+        return (List<String>) doExecute(Command.mget, ObjectResult.class,keys);
     }
 
     @Override
@@ -157,7 +133,7 @@ public class RedisWangClient extends DefaultClient implements SetClient,BitMapsC
 
     @Override
     public List getRangeList(String key, int start, int end) {
-        return doExecute(Command.lrange, ObjectResult.class,key,start,end);
+        return (List) doExecute(Command.lrange, ObjectResult.class,key,start,end);
     }
 
     @Override
@@ -237,13 +213,13 @@ public class RedisWangClient extends DefaultClient implements SetClient,BitMapsC
 
     @Override
     public List<Object> hkeys(String key) {
-        return doExecute(Command.hkeys, ObjectResult.class,key);
+        return (List<Object>) doExecute(Command.hkeys, ObjectResult.class,key);
 
     }
 
     @Override
     public List<Object> hvals(String key) {
-        return doExecute(Command.hvals, ObjectResult.class,key);
+        return (List<Object>) doExecute(Command.hvals, ObjectResult.class,key);
     }
 
     @Override

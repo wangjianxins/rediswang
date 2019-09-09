@@ -80,7 +80,7 @@ public class ObjectResult extends AbstractExecute<List> {
         if (len == -1) {
             return null;
         }
-        final List<Object> ret = new ArrayList<Object>(len);
+        final List<Object> ret = new ArrayList<>(len);
         for (int i = 0; i < len; i++) {
             try {
                 //再去判断他item什么类型，一般不会是list的，在导致递归一次
