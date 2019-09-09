@@ -7,7 +7,7 @@
 
 目前支持的操作：set,mset,get,del,expires,setnx,lpush,rpush,lpop.rpop,hset,hget,hmset,hyperloglog...
 
-# 在众多的redis-java客户端中此客户端starter的突出闪光点如下！
+## 在众多的redis-java客户端中此客户端starter的突出闪光点如下！
   1、异常错误信息日志全部中文格式输出，以及源代码中文注解，方便看不懂英文的迅速定位问题 - -、
   2、提供统计功能，包括连接池，命令的统计展示，每个时间段
   3、提供预警功能，例如大key,热点key会及时的通知出来
