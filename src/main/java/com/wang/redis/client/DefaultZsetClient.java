@@ -107,12 +107,14 @@ public class DefaultZsetClient implements ZsetClient {
 
     @Override
     public int zrank(Object member) {
-        return redisWangClient.doExecute(Command.zrange, IntResult.class,getCurrentkey(),member);
+        return redisWangClient.doExecute(Command.zrank, IntResult.class,getCurrentkey(),member);
     }
+
+
 
     @Override
     public int zrevrank(Object member) {
-        return redisWangClient.doExecute(Command.zrevrange, IntResult.class,getCurrentkey(),member);
+        return redisWangClient.doExecute(Command.zrevrank, IntResult.class,getCurrentkey(),member);
     }
 
     @Override

@@ -5,7 +5,7 @@
 
 目前是单机版本的redis连接，后续支持集群版本的连接
 
-目前支持的操作：set,mset,get,del,expires,setnx,lpush,rpush,lpop.rpop,hset,hget,hmset,hyperloglog...
+目前支持的操作：set,mset,get,del,expires,setnx,lpush,rpush,lpop.rpop,hset,hget,hmset,sadd,scard,sismember,zadd,zrangebyscore,zrevrangebyscore,zcount,hyperloglog...
 
 ## 在众多的redis-java客户端中此客户端starter的突出闪光点如下！
     1、异常错误信息日志全部中文格式输出，以及源代码中文注解，方便看不懂英文的迅速定位问题 - -、
