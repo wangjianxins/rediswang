@@ -38,7 +38,7 @@ public class ObjectResult extends AbstractExecute<List> {
         } else if (b == COLON_BYTE) {
             return processInteger(inputStream);
         } else if (b == MINUS_BYTE) {
-            throw new RedisWangException("redis指令错误,或者指令和数据不匹配");
+            throw new RedisWangException("redis指令错误,或者指令和数据不匹配:"+inputStream.readLine());
         } else {
             throw new RedisWangException("接收错误数据");
         }

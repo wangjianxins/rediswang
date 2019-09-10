@@ -1,6 +1,9 @@
 package com.wang.redis.client;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.wang.redis.Command.Command;
+import com.wang.redis.Exception.RedisWangException;
 import com.wang.redis.result.IntResult;
 import com.wang.redis.result.ObjectResult;
 import com.wang.redis.transmission.Tuple;
@@ -21,8 +24,12 @@ public class DefaultZsetClient implements ZsetClient {
         this.currentkey = key;
         this.redisWangClient = redisWangClient;
     }
-    public String getCurrentkey() {
-        return currentkey;
+    public byte[] getCurrentkey() {
+        try {
+            return currentkey.getBytes("utf-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RedisWangException("get key byte 错误");
+        }
     }
 
     @Override
@@ -32,18 +39,17 @@ public class DefaultZsetClient implements ZsetClient {
 
     @Override
     public int zadd(Map<String, Double> map) {
-        HashMap<byte[], Double> binaryScoreMembers = new HashMap<>();
+        HashMap<byte[], Double> binaryScoreMembers = new HashMap<byte[], Double>();
         for (Map.Entry<String, Double> entry : map.entrySet()) {
-            try {
-                binaryScoreMembers.put(entry.getKey().getBytes("utf-8"), entry.getValue());
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            Object s = entry.getValue();
+            Double v;
+            v = Double.valueOf(s.toString());
+            binaryScoreMembers.put(toByteArray(entry.getKey()), v);
         }
         ArrayList<byte[]> args = new ArrayList<>(map.size() * 2 + 1);
         try {
-            args.add(getCurrentkey().getBytes("utf-8"));
-        } catch (UnsupportedEncodingException e) {
+            args.add(getCurrentkey());
+        } catch (Exception e) {
             e.printStackTrace();
         }
         args.addAll(convertScoreMembersToByteArrays(binaryScoreMembers));
@@ -80,6 +86,10 @@ public class DefaultZsetClient implements ZsetClient {
         return null;
     }
 
+    public static byte[] toByteArray(final String key){
+        return JSON.toJSONBytes(key, new SerializerFeature[]{SerializerFeature.WriteClassName});
+    }
+
     @Override
     public int zcount() {
         return redisWangClient.doExecute(Command.zcard, IntResult.class,getCurrentkey());
@@ -114,10 +124,10 @@ public class DefaultZsetClient implements ZsetClient {
     public Set zrange(int start, int end, Boolean withScore) {
         List list;
         if(withScore){
-            list = redisWangClient.doExecute(Command.zrange, ObjectResult.class,getCurrentkey(),start,end,withscores);
+            list = redisWangClient.doExecute(Command.zrange, ObjectResult.class,getCurrentkey(),toByteArray(start),toByteArray(end),withscores);
             return revset(list);
         }
-        list = redisWangClient.doExecute(Command.zrange, ObjectResult.class,getCurrentkey(),start,end);
+        list = redisWangClient.doExecute(Command.zrange, ObjectResult.class,getCurrentkey(),toByteArray(start),toByteArray(end));
 
         return new HashSet(list);
     }
@@ -126,41 +136,41 @@ public class DefaultZsetClient implements ZsetClient {
     public Set zrevrange(int start, int end, Boolean withScore) {
         List list;
         if(withScore){
-            list = redisWangClient.doExecute(Command.zrevrange, ObjectResult.class,getCurrentkey(),start,end,withscores);
+            list = redisWangClient.doExecute(Command.zrevrange, ObjectResult.class,getCurrentkey(),toByteArray(start),toByteArray(end),withscores);
             return revset(list);
         }
-        list = redisWangClient.doExecute(Command.zrevrange, ObjectResult.class,getCurrentkey(),start,end);
+        list = redisWangClient.doExecute(Command.zrevrange, ObjectResult.class,getCurrentkey(),toByteArray(start),toByteArray(end));
 
         return new HashSet(list);
     }
 
     @Override
-    public Set zrangebyscore(double start, double end, Boolean withScore) {
+    public Set zrangebyscore(final double min, final double max, Boolean withScore) {
         List list;
         if(withScore){
-            list = redisWangClient.doExecute(Command.zrangebyscore, ObjectResult.class,getCurrentkey(),start,end,withscores);
+            list = redisWangClient.doExecute(Command.zrangebyscore, ObjectResult.class,getCurrentkey(),toByteArray(min),toByteArray(max),withscores);
             return revset(list);
         }
-        list = redisWangClient.doExecute(Command.zrangebyscore, ObjectResult.class,getCurrentkey(),start,end);
+        list = redisWangClient.doExecute(Command.zrangebyscore, ObjectResult.class,getCurrentkey(),toByteArray(min),toByteArray(max));
 
         return new HashSet(list);
     }
 
     @Override
-    public Set zrevrangebyscore(double start, double end, Boolean withScore) {
+    public Set zrevrangebyscore(double max, double min, Boolean withScore) {
         List list;
         if(withScore){
-            list = redisWangClient.doExecute(Command.zrevrangebyscore, ObjectResult.class,getCurrentkey(),start,end,withscores);
+            list = redisWangClient.doExecute(Command.zrevrangebyscore, ObjectResult.class,getCurrentkey(),toByteArray(max),toByteArray(min),withscores);
             return revset(list);
         }
-        list = redisWangClient.doExecute(Command.zrevrangebyscore, ObjectResult.class,getCurrentkey(),start,end);
+        list = redisWangClient.doExecute(Command.zrevrangebyscore, ObjectResult.class,getCurrentkey(),toByteArray(max),toByteArray(min));
 
         return new HashSet(list);
     }
 
     @Override
     public int zcountbyscore(double start, double end) {
-        return redisWangClient.doExecute(Command.zincrby, IntResult.class,getCurrentkey(),start,end);
+        return redisWangClient.doExecute(Command.zincrby, IntResult.class,getCurrentkey(),toByteArray(start),toByteArray(end));
     }
 
     public Set revset(List list){
