@@ -1,6 +1,5 @@
 package com.wang.redis.client;
 
-import com.alibaba.fastjson.JSON;
 import com.wang.redis.Command.Command;
 import com.wang.redis.Serializer.FasterSerializer;
 import com.wang.redis.connection.Connection;
@@ -36,9 +35,9 @@ public abstract class AbstractExecute<T> implements Execute<T> {
 
     protected static void send(RedisOutputStream outputStream, Command command, Object... arguments) throws Exception {
         //key这里不走json的格式化
-//        if(arguments[0] instanceof String){
-//            arguments[0] = stringToBytes((String) arguments[0]);
-//        }
+        if(arguments[0] instanceof String){
+            arguments[0] = stringToBytes((String) arguments[0]);
+        }
         String commandString = command.name();
         if (command.name().indexOf(TransmissionData.COMMAND_SEPARATOR) > 0) {
             commandString = command.name().replace(TransmissionData.COMMAND_SEPARATOR, TransmissionData.SPACE);

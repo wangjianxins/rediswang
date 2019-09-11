@@ -23,7 +23,7 @@
     <dependency>
         <groupId>com.github.wangjianxins</groupId>
         <artifactId>rediswang-spring-auto-starter</artifactId>
-        <version>1.0.6-RELEASE</version>
+        <version>1.0.7-RELEASE</version>
     </dependency>
 
 ### 配置文件：

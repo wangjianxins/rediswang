@@ -6,6 +6,7 @@ import com.wang.redis.config.RedisWangProperties;
 import com.wang.redis.connection.impl.ConnectionPoolImpl;
 import com.wang.redis.result.*;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -41,7 +42,11 @@ public class RedisWangClient extends DefaultClient{
     @Override
     public boolean set(String key, String value,long expires) {
         if (expires != 0) {
-            return doExecute(Command.setex, BooleanResult.class,key,expires,value);
+            try {
+                return doExecute(Command.setex, BooleanResult.class,key,String.valueOf(expires).getBytes("utf-8"),value);
+            } catch (UnsupportedEncodingException e) {
+                throw new RedisWangException("expires错误");
+            }
         } else {
             return doExecute(Command.set,BooleanResult.class,key,value);
         }
