@@ -1,4 +1,4 @@
-package com.wang.redis.client;
+package com.wang.redis.client.host;
 
 
 import java.util.Map;

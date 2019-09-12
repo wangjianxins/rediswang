@@ -3,7 +3,7 @@ package com.wang.redis.config;
 
 //自动装配类
 
-import com.wang.redis.client.RedisWangClient;
+import com.wang.redis.client.host.RedisWangClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

@@ -1,4 +1,4 @@
-package com.wang.redis.client;
+package com.wang.redis.client.host;
 
 import com.wang.redis.Command.Command;
 import com.wang.redis.connection.Connection;

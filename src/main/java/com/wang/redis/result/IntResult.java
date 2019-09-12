@@ -2,7 +2,7 @@ package com.wang.redis.result;
 
 import com.wang.redis.Command.Command;
 import com.wang.redis.Exception.RedisWangException;
-import com.wang.redis.client.AbstractExecute;
+import com.wang.redis.client.host.AbstractExecute;
 import com.wang.redis.io.RedisInputStream;
 
 /**
