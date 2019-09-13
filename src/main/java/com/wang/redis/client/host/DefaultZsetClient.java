@@ -11,6 +11,11 @@ import com.wang.redis.transmission.Tuple;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
+/**
+ * @Description zsete的默认实现类
+ * @author Jianxin Wang
+ * @date 2019-09-12
+ */
 public class DefaultZsetClient implements ZsetClient {
 
     public static final byte[] POSITIVE_INFINITY_BYTES = "+inf".getBytes();

@@ -21,10 +21,12 @@ public class RedisWangClient extends DefaultClient{
         super(new ConnectionPoolImpl(redisWangProperties));
     }
 
+    //获得set客户端
     public SetClient bindSetClient(String key) {
         return new DefaultSetClient(key,this);
     }
 
+    //获得zset客户端
     public ZsetClient bindZsetClient(String key){
         return new DefaultZsetClient(key,this);
     }
