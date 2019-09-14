@@ -1,6 +1,7 @@
 package com.wang.redis.client.host;
 
 import com.wang.redis.Command.Command;
+import com.wang.redis.Command.CommandService;
 import com.wang.redis.Exception.RedisWangException;
 import com.wang.redis.config.RedisWangProperties;
 import com.wang.redis.connection.impl.ConnectionPoolImpl;
@@ -20,6 +21,11 @@ public class RedisWangClient extends DefaultClient{
     public RedisWangClient(RedisWangProperties redisWangProperties){
         super(new ConnectionPoolImpl(redisWangProperties));
     }
+
+    public RedisWangClient(String address,int port){
+        super(new ConnectionPoolImpl(new RedisWangProperties(address,port)));
+    }
+
 
     //获得set客户端
     public SetClient bindSetClient(String key) {
@@ -238,5 +244,18 @@ public class RedisWangClient extends DefaultClient{
 
 
     //===========================hash操作
+
+
+
+    //===========================哨兵相关
+
+    /**
+     * 这个api会获取真正的master地址，包括在故障转移过程中
+     */
+    public List<String> getSentinelMasterByName(String masterName){
+        return (List<String>) doSentinelExecute(CommandService.SENTINEL,ObjectResult.class,CommandService.GET_MASTER,CommandService
+        .MASTER_NAME,masterName);
+    }
+
 
 }

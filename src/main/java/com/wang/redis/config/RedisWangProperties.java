@@ -11,6 +11,11 @@ public class RedisWangProperties {
     private int port;
     private String password;
 
+    public RedisWangProperties(String address,int port){
+        this.address = address;
+        this.port = port;
+    }
+
     public String getAddress() {
         return address;
     }

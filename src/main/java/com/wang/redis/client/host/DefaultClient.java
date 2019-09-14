@@ -35,4 +35,21 @@ public abstract class DefaultClient implements BaseClient {
         return (T) commandInstance.doExecute(connectionPool.getConnection(),command,params);
     }
 
+    public <T> T doSentinelExecute(String commandName,Class<? extends Execute<T>> execute ,Object ...param){
+        Execute commandInstance = null;
+        try {
+            commandInstance = execute.getConstructor(new Class<?>[]{}).newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+
+        return (T) commandInstance.doSentinelExecute(connectionPool.getConnection(),commandName,param);
+    }
+
 }
