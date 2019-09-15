@@ -106,4 +106,11 @@ public enum Command {
     //getbit key offset
     getbit,
 
+
+
+
+
+    //
+    sentinel,
+
 }

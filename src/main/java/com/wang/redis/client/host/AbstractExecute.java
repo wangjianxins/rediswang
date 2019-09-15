@@ -19,7 +19,7 @@ public abstract class AbstractExecute<T> implements Execute<T> {
         T result;
 
         try {
-            send(connection.getOutputStream(), command,null, params);
+            send(connection.getOutputStream(), command, params);
             connection.getOutputStream().flush();
 
             result = (T) receive(connection.getInputStream(), command, params);
@@ -32,29 +32,13 @@ public abstract class AbstractExecute<T> implements Execute<T> {
         return result;
     }
 
-    public T doSentinelExecute(Connection connection,String commandName,Object... params){
-        T result;
-        try {
-            send(connection.getOutputStream(), null,commandName, params);
-            connection.getOutputStream().flush();
 
-            result = (T) receive(connection.getInputStream(), null, params);
-            connection.getInputStream().clear();
-
-        } catch (Exception e) {
-            throw new RuntimeException("command execute failed!", e);
-        }
-        connection.close();
-        return result;
-    }
-
-
-    protected static void send(RedisOutputStream outputStream, Command command, String commandName,Object... arguments) throws Exception {
+    protected static void send(RedisOutputStream outputStream, Command command,Object... arguments) throws Exception {
         //key这里不走json的格式化
         if(arguments[0] instanceof String){
             arguments[0] = stringToBytes((String) arguments[0]);
         }
-        String commandString = null != commandName ? command.name() : commandName;
+        String commandString = command.name();
         if (command.name().indexOf(TransmissionData.COMMAND_SEPARATOR) > 0) {
             commandString = command.name().replace(TransmissionData.COMMAND_SEPARATOR, TransmissionData.SPACE);
         }

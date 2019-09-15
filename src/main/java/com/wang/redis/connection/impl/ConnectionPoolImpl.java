@@ -1,7 +1,6 @@
 package com.wang.redis.connection.impl;
 
 import com.wang.redis.Exception.RedisWangException;
-import com.wang.redis.config.RedisWangProperties;
 import com.wang.redis.connection.Connection;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -20,12 +19,12 @@ public class ConnectionPoolImpl extends DefaultAbstractPoolImpl {
     private String address;
     private int port;
 
-    public ConnectionPoolImpl(RedisWangProperties redisWangProperties){
-        if(this.port <= 0){
+    public ConnectionPoolImpl(String address,int port){
+        if(port <= 0){
             throw new RedisWangException("[redis-wang]redis的端口设置错误");
         }
-        this.address = redisWangProperties.getAddress();
-        this.port = redisWangProperties.getPort();
+        this.address = address;
+        this.port = port;
         logger.info("[redis-wang]redis配置完成");
         //尝试连接是否配置数据正确
         connection();

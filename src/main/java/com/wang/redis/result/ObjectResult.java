@@ -74,9 +74,9 @@ public class ObjectResult extends AbstractExecute<List> {
     }
 
     private List<Object> processMultiBulkReply(final RedisInputStream in) throws IOException {
-        String result = in.readLine();
-        int len = Integer.valueOf(result.replace("*","").trim());
-
+//        String result = in.readLine();
+//        int len = Integer.valueOf(result.replace("*","").trim());
+        final int len = (int) in.readLongCrLf();
         if (len == -1) {
             return null;
         }

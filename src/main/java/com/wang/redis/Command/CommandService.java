@@ -7,7 +7,5 @@ package com.wang.redis.Command;
  */
 public class CommandService {
 
-    public static final String SENTINEL = "sentinel";
     public static final String GET_MASTER = "get-master-addr-by-name";
-    public static final String MASTER_NAME = "mymaster";
 }

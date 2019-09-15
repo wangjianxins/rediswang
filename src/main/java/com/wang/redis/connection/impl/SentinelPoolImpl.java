@@ -2,11 +2,13 @@ package com.wang.redis.connection.impl;
 
 import com.wang.redis.Exception.RedisWangException;
 import com.wang.redis.client.host.RedisWangClient;
+import com.wang.redis.client.sentinel.SimpleSentinelClient;
 import com.wang.redis.connection.Connection;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
@@ -24,13 +26,17 @@ public class SentinelPoolImpl extends DefaultAbstractPoolImpl {
 
     private volatile String currentHostMaster;
 
-    public SentinelPoolImpl(String address,int port,String sentinels){
+    public SentinelPoolImpl(String address,int port){
+        currentHostMaster = address+":"+port;
+    }
+
+    public SentinelPoolImpl(String master,String sentinels){
         String[] sentinalArray = sentinels.split(",");
         Set<String> set = new HashSet<>();
         for(String s : sentinalArray){
             set.add(s);
         }
-        this.createSentinelPool(address+":"+port, set);
+        this.createSentinelPool(master, set);
     }
 
 
@@ -43,27 +49,30 @@ public class SentinelPoolImpl extends DefaultAbstractPoolImpl {
 
     //获得哨兵监控的redis节点中主节点的信息，这里的参数masterName不一定是正确的主节点，有可能是目前的主节点down了，哨兵正在做新的选举中
     public String getEffectiveMaster(String masterName,Set<String> sentinels){
-        RedisWangClient redisWangClient;
+        //初始化连接哨兵的池,用完需要关闭连接
+        SimpleSentinelClient simpleSentinelClient = null;
         String master = null;
         Boolean sentineleislive = false;
         try {
             reentrantLock.lock();
             for(String sentinel : sentinels){
                 sentineleislive = true;
+                logger.info("sentinel:"+sentinel);
                 String address = sentinel.trim().split(":")[0];
                 String port = sentinel.trim().split(":")[1];
-                redisWangClient = new RedisWangClient(address,Integer.valueOf(port));
-                List<String> masterAddr = redisWangClient.getSentinelMasterByName(masterName);
+                if(simpleSentinelClient == null){
+                    simpleSentinelClient = new SimpleSentinelClient(address,Integer.valueOf(port));
+                }
+                List<String> masterAddr = simpleSentinelClient.getSentinelMasterByName(masterName);
+                logger.info("masterAddr:"+masterAddr);
                 if (masterAddr == null || masterAddr.size() != 2) {
-                    //warm
-                    System.out.println("(哨兵没有down)通过哨兵没有获得到master地址");
+                    //warn
+                    logger.warn("(哨兵没有down)通过哨兵没有获得到master地址");
                     continue;
                 }
                 String masterhost =  masterAddr.get(0);
                 int masterport = Integer.parseInt(masterAddr.get(1));
-                System.out.println(masterhost);
-                System.out.println(masterport);
-                master = masterhost+":"+ port;
+                master = masterhost+":"+ masterport;
             }
 
             if(master == null){
@@ -79,10 +88,11 @@ public class SentinelPoolImpl extends DefaultAbstractPoolImpl {
 
 
         }catch (Exception e){
+            e.printStackTrace();
             throw new RedisWangException("初始化哨兵模式连接池失败："+e.getMessage());
         }finally {
             //这里还要释放哨兵的连接
-
+            simpleSentinelClient.close();
             reentrantLock.unlock();
         }
 

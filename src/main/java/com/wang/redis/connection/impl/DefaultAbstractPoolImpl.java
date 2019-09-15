@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -39,6 +40,10 @@ public abstract class DefaultAbstractPoolImpl implements ConnectionPool {
     @Override
     public Connection getConnection() {
         return this.getConnection(0);
+    }
+
+    public List<Connection> getAllConection(){
+        return connectionPool;
     }
 
     /**
