@@ -10,6 +10,9 @@ public class RedisWangProperties {
     private String address;
     private int port;
     private String password;
+    //哨兵host:port信息，逗号分割
+    private String sentinels;
+
 
     public RedisWangProperties(String address,int port){
         this.address = address;
@@ -38,5 +41,13 @@ public class RedisWangProperties {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getSentinels() {
+        return sentinels;
+    }
+
+    public void setSentinels(String sentinels) {
+        this.sentinels = sentinels;
     }
 }

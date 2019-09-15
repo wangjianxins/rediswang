@@ -22,8 +22,17 @@ public class RedisWangAuthConfigure {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "redis",value = "enabled",havingValue = "true")
+    @ConditionalOnProperty(prefix = "redis",value = "enbale",havingValue = "true")
     public RedisWangClient getClient(){
-        return new RedisWangClient(redisWangProperties);
+        if(null == redisWangProperties.getSentinels()){
+            return new RedisWangClient(redisWangProperties.getAddress(),redisWangProperties.getPort());
+        }else{
+            //哨兵模式
+            return new RedisWangClient(redisWangProperties.getAddress(),redisWangProperties.getPort(),redisWangProperties.getSentinels());
+        }
     }
+
+
+
+
 }

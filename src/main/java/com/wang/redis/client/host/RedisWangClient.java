@@ -5,6 +5,7 @@ import com.wang.redis.Command.CommandService;
 import com.wang.redis.Exception.RedisWangException;
 import com.wang.redis.config.RedisWangProperties;
 import com.wang.redis.connection.impl.ConnectionPoolImpl;
+import com.wang.redis.connection.impl.SentinelPoolImpl;
 import com.wang.redis.result.*;
 
 import java.io.UnsupportedEncodingException;
@@ -18,8 +19,8 @@ import java.util.*;
  */
 public class RedisWangClient extends DefaultClient{
 
-    public RedisWangClient(RedisWangProperties redisWangProperties){
-        super(new ConnectionPoolImpl(redisWangProperties));
+    public RedisWangClient(String address,int port,String sentinels){
+        super(new SentinelPoolImpl(address,port,sentinels));
     }
 
     public RedisWangClient(String address,int port){
