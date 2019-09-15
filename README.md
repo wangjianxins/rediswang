@@ -3,7 +3,7 @@
 ## 这是一款简单高效的redis-java客户端
 
 
-目前是单机版本的redis连接，后续支持集群版本的连接(sentinel,cluster)
+目前是单机版本、sentinel哨兵模式的redis连接，后续支持集群版本的连接
 
 目前支持的操作：set,mset,get,del,expires,setnx,lpush,rpush,lpop.rpop,hset,hget,hmset,sadd,scard,sismember,zadd,zrangebyscore,zrevrangebyscore,zcount,hyperloglog...
 
@@ -27,10 +27,18 @@
     </dependency>
 
 ### 配置文件：
+    #单机版
     redis:
         address: XX
         enbale: true
         port: XX
+        
+    #sentinel哨兵版本
+    redis:
+        enbale: true
+        sentinels: ip:port,ip:port,...(逗号隔开多个哨兵)
+        masterName: 哨兵配置的master节点名称
+    
 
 ### 依赖注入
     @Autowired
