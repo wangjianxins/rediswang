@@ -22,12 +22,16 @@ public class SentinelPoolImpl implements ConnectionPool {
 
     private ReentrantLock reentrantLock = new ReentrantLock();
 
+    private volatile String currentHostMaster;
+
+
     private SentinelPoolImpl(String mastername,Set<String> sentinels){
         this.mastername = mastername;
         this.sentinels = sentinels;
-
         //获取哨兵中的有效的master节点
         String masterinfo = getEffectiveMaster(mastername,sentinels);
+        //init
+        initSentinelPool(masterinfo);
     }
 
     //获得哨兵监控的redis节点中主节点的信息，这里的参数masterName不一定是正确的主节点，有可能是目前的主节点down了，哨兵正在做新的选举中
@@ -63,6 +67,7 @@ public class SentinelPoolImpl implements ConnectionPool {
                 }
             }
 
+            //这里需要订阅哨兵的频道，随时的得知哨兵选举的最新的master
 
 
         }catch (Exception e){
@@ -74,6 +79,13 @@ public class SentinelPoolImpl implements ConnectionPool {
         }
 
         return master;
+    }
+
+    public void initSentinelPool(String master){
+        //和当前哨兵的master不一样才要开始初始化的
+        if(!master.equals(currentHostMaster)){
+            
+        }
     }
 
 
