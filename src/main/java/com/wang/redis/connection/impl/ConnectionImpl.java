@@ -4,6 +4,7 @@ import com.wang.redis.Exception.RedisWangException;
 import com.wang.redis.connection.Connection;
 import com.wang.redis.io.RedisInputStream;
 import com.wang.redis.io.RedisOutputStream;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -15,6 +16,8 @@ import java.net.Socket;
  * @date 2019-08-27
  */
 public class ConnectionImpl implements Connection {
+
+    private static final Logger logger = Logger.getLogger(ConnectionImpl.class);
 
     private RedisInputStream inputStream;
 
@@ -47,6 +50,7 @@ public class ConnectionImpl implements Connection {
     @Override
     public void close() {
         try {
+            logger.info("正式关闭连接");
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();

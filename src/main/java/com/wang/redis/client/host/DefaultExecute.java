@@ -3,8 +3,10 @@ package com.wang.redis.client.host;
 import com.wang.redis.Command.Command;
 import com.wang.redis.connection.Connection;
 import com.wang.redis.connection.ConnectionPool;
+import org.apache.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -13,6 +15,7 @@ import java.util.List;
  * @date 2019-09-09
  */
 public abstract class DefaultExecute {
+    private static final Logger logger = Logger.getLogger(DefaultExecute.class);
 
     protected ConnectionPool connectionPool;
 
@@ -25,6 +28,7 @@ public abstract class DefaultExecute {
         try {
             commandInstance = execute.getConstructor(new Class<?>[]{}).newInstance();
         } catch (InstantiationException e) {
+            e.printStackTrace();
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
@@ -47,8 +51,15 @@ public abstract class DefaultExecute {
 
     //关闭client所有连接
     public void close(){
+        logger.info("开始关闭连接");
         List<Connection> connectionList = connectionPool.getAllConection();
-        connectionList.forEach(con -> con.close());
+        logger.info("获得连接个数:"+connectionList.size());
+        Iterator it  = connectionList.iterator();
+        if(it.hasNext()){
+            Connection c = (Connection) it.next();
+            c.close();
+        }
+        connectionList.clear();
     }
 
 }

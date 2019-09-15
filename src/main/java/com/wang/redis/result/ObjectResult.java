@@ -2,6 +2,7 @@ package com.wang.redis.result;
 
 import com.wang.redis.Command.Command;
 import com.wang.redis.Exception.RedisWangException;
+import com.wang.redis.Serializer.StringRedisSerializer;
 import com.wang.redis.client.host.AbstractExecute;
 import com.wang.redis.io.RedisInputStream;
 import java.io.IOException;
@@ -70,7 +71,13 @@ public class ObjectResult extends AbstractExecute<List> {
         // read 2 more bytes for the command delimiter
         in.readByte();
         in.readByte();
-        return fasterSerializer.deserialize(read);
+        Object result;
+        try {
+            result = fasterSerializer.deserialize(read);
+        }catch (Exception e){
+            result = StringRedisSerializer.deserialize(read);
+        }
+        return result;
     }
 
     private List<Object> processMultiBulkReply(final RedisInputStream in) throws IOException {

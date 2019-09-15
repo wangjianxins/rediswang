@@ -4,6 +4,7 @@ import com.wang.redis.connection.Connection;
 import com.wang.redis.connection.ConnectionPool;
 import com.wang.redis.io.RedisInputStream;
 import com.wang.redis.io.RedisOutputStream;
+import org.apache.log4j.Logger;
 
 /**
  * @Description connectionImpl的代理类，主要是close方法不是关闭而是返回list pool
@@ -11,6 +12,7 @@ import com.wang.redis.io.RedisOutputStream;
  * @date 2019-08-29
  */
 public class ConnectionProxy implements Connection {
+    private static final Logger logger = Logger.getLogger(ConnectionProxy.class);
 
     private Connection connection;
 
@@ -38,6 +40,7 @@ public class ConnectionProxy implements Connection {
      */
     @Override
     public void close() {
+        logger.info("开始释放连接");
         connectionPool.releaseConnection(this);
     }
 

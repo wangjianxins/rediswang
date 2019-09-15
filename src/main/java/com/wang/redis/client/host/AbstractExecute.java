@@ -26,7 +26,7 @@ public abstract class AbstractExecute<T> implements Execute<T> {
             connection.getInputStream().clear();
 
         } catch (Exception e) {
-            throw new RuntimeException("command execute failed!", e);
+            throw new RuntimeException("command 执行错误!", e);
         }
         connection.close();
         return result;

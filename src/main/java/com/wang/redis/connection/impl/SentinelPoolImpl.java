@@ -1,14 +1,12 @@
 package com.wang.redis.connection.impl;
 
 import com.wang.redis.Exception.RedisWangException;
-import com.wang.redis.client.host.RedisWangClient;
 import com.wang.redis.client.sentinel.SimpleSentinelClient;
 import com.wang.redis.connection.Connection;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
@@ -63,15 +61,15 @@ public class SentinelPoolImpl extends DefaultAbstractPoolImpl {
                 if(simpleSentinelClient == null){
                     simpleSentinelClient = new SimpleSentinelClient(address,Integer.valueOf(port));
                 }
-                List<String> masterAddr = simpleSentinelClient.getSentinelMasterByName(masterName);
+                List<Object> masterAddr = simpleSentinelClient.getSentinelMasterByName(masterName);
                 logger.info("masterAddr:"+masterAddr);
                 if (masterAddr == null || masterAddr.size() != 2) {
                     //warn
                     logger.warn("(哨兵没有down)通过哨兵没有获得到master地址");
                     continue;
                 }
-                String masterhost =  masterAddr.get(0);
-                int masterport = Integer.parseInt(masterAddr.get(1));
+                String masterhost = (String) masterAddr.get(0);
+                Integer masterport = (Integer) masterAddr.get(1);
                 master = masterhost+":"+ masterport;
             }
 
