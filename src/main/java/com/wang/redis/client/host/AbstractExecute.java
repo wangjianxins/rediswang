@@ -2,12 +2,11 @@ package com.wang.redis.client.host;
 
 import com.wang.redis.Command.Command;
 import com.wang.redis.Serializer.FasterSerializer;
+import com.wang.redis.Serializer.StringRedisSerializer;
 import com.wang.redis.connection.Connection;
 import com.wang.redis.io.RedisInputStream;
 import com.wang.redis.io.RedisOutputStream;
 import com.wang.redis.transmission.TransmissionData;
-
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public abstract class AbstractExecute<T> implements Execute<T> {
@@ -35,7 +34,7 @@ public abstract class AbstractExecute<T> implements Execute<T> {
     protected static void send(RedisOutputStream outputStream, Command command,Object... arguments) throws Exception {
         //key这里不走json的格式化
         if(arguments[0] instanceof String){
-            arguments[0] = stringToBytes((String) arguments[0]);
+            arguments[0] = StringRedisSerializer.serialize((String) arguments[0]);
         }
         String commandString = command.name();
         if (command.name().indexOf(TransmissionData.COMMAND_SEPARATOR) > 0) {
@@ -66,21 +65,11 @@ public abstract class AbstractExecute<T> implements Execute<T> {
                 argumentBytes[i] = fasterSerializer.serialize(arguments[i].toString());
             }
         }
-        TransmissionData.sendCommand(outputStream, stringToBytes(commandString), argumentBytes);
+        TransmissionData.sendCommand(outputStream, StringRedisSerializer.serialize(commandString), argumentBytes);
     }
 
     //子类实现该方法，返回不同的结果
     protected abstract Object receive(RedisInputStream inputStream, Command command, Object... arguments) throws Exception;
-
-
-    public static byte[] stringToBytes(String s){
-        try {
-            return s.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 
 
 }

@@ -1,11 +1,8 @@
 package com.wang.redis.client.host;
 
 import com.wang.redis.Command.Command;
-import com.wang.redis.Serializer.StringRedisSerializer;
 import com.wang.redis.connection.Connection;
 import com.wang.redis.connection.ConnectionPool;
-import com.wang.redis.result.ObjectResult;
-import com.wang.redis.result.VoidResult;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
@@ -53,9 +50,9 @@ public class DefaultExecute {
     }
 
     //关闭client所有连接
-    public void close(){
+    public void close(List<Connection> connectionList){
         logger.info("开始关闭连接");
-        List<Connection> connectionList = connectionPool.getAllConection();
+//        List<Connection> connectionList = connectionPool.getAllConection();
         logger.info("获得连接个数:"+connectionList.size());
         Iterator it  = connectionList.iterator();
         if(it.hasNext()){
@@ -68,8 +65,8 @@ public class DefaultExecute {
 
     //======pub,sub
 
-    public void subscribe(final RedisPubSub redisPubSub, final String channels) {
-        redisPubSub.subscribe(connectionPool.getConnection(),Command.subscribe, RedisPubSub.class, StringRedisSerializer.serialize(channels));
+    public void subscribe(final RedisPubSub redisPubSub, final String channel) {
+        redisPubSub.subscribe(connectionPool.getConnection(),Command.subscribe, channel);
     }
 
 

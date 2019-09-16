@@ -103,8 +103,10 @@ public class ObjectResult extends AbstractExecute<List> {
         String result = inputStream.readLine();
         if(result.contains(":")){
             return Long.valueOf(result.replace(":",""));
+        }else{
+            //这里的情况是类似pubsub初始化返回的数据只有数据没有":"
+            return Long.valueOf(result);
         }
-        return 0l;
     }
 
 

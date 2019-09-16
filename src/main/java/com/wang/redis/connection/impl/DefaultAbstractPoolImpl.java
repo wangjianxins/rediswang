@@ -23,7 +23,7 @@ public abstract class DefaultAbstractPoolImpl implements ConnectionPool {
     private ReentrantLock lock = new ReentrantLock();
 
     //当前连接池
-    private volatile LinkedList<Connection> connectionPool = new LinkedList();
+    protected volatile LinkedList<Connection> connectionPool = new LinkedList();
 
     //最大连接数
     private final int maxSize = 20;
@@ -35,7 +35,7 @@ public abstract class DefaultAbstractPoolImpl implements ConnectionPool {
     private final int maxIdleSize = 10;
 
     //当前连接数
-    private volatile int totalSize;
+    protected volatile int totalSize;
 
     @Override
     public Connection getConnection() {

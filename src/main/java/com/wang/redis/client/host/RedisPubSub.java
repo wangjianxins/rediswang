@@ -5,7 +5,10 @@ import com.wang.redis.Exception.RedisWangException;
 import com.wang.redis.Serializer.StringRedisSerializer;
 import com.wang.redis.connection.Connection;
 import com.wang.redis.io.RedisInputStream;
+import com.wang.redis.io.RedisOutputStream;
 import com.wang.redis.result.ObjectResult;
+import com.wang.redis.transmission.TransmissionData;
+import org.apache.log4j.Logger;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,41 +18,39 @@ import java.util.List;
  * @author Jianxin Wang
  * @date 2019-09-15
  */
-public class RedisPubSub extends AbstractExecute{
+public abstract class RedisPubSub{
+    private static final Logger logger = Logger.getLogger(RedisPubSub.class);
 
     private int subscribedChannels = 0;
 
-    public void subscribe(Connection connection,Command command,Object... parmas){
-        this.doExecute(connection,command,parmas);
+    public void subscribe(Connection connection, Command command,String channel){
+        this.doExecute(connection,command,channel);
     }
 
-    @Override
-    public Object doExecute(Connection connection, Command command, Object... params) {
-        Object result;
+    public void doExecute(Connection connection, Command command, Object... params) {
         try {
             connection.setTimeoutInfinite();
-            send(connection.getOutputStream(), command, params);
-            connection.getOutputStream().flush();
-
-            result = this.receive(connection.getInputStream(), command, params);
-            connection.getInputStream().clear();
+            RedisOutputStream o  = connection.getOutputStream();
+            TransmissionData.sendCommand(o, StringRedisSerializer.serialize(command.name()), StringRedisSerializer.serialize(params[0].toString()));
+            o.flush();
+            process(connection.getInputStream());
 
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("command 执行错误!", e);
         }
-        connection.close();
-        return result;
     }
 
-    @Override
-    protected Object receive(RedisInputStream inputStream, Command command, Object... arguments) throws Exception {
+    protected Object process(RedisInputStream inputStream) throws Exception {
         do {
             List<Object> reply = (List<Object>) ObjectResult.process(inputStream);
-            final Object firstObj = reply.get(0);
-            if (!(firstObj instanceof byte[])) {
-                throw new RedisWangException("Unknown message type: " + firstObj);
+            reply.set(0,StringRedisSerializer.serialize((String) reply.get(0)));
+            reply.set(1,StringRedisSerializer.serialize((String) reply.get(1)));
+            if(reply.get(2) instanceof String){
+                reply.set(2,StringRedisSerializer.serialize(reply.get(2).toString()));
             }
+
+            final Object firstObj = reply.get(0);
             final byte[] resp = (byte[]) firstObj;
             if (Arrays.equals(StringRedisSerializer.serialize("subscribe"), resp)) {
                 subscribedChannels = ((Long) reply.get(2)).intValue();
@@ -92,19 +93,20 @@ public class RedisPubSub extends AbstractExecute{
             } else {
                 throw new RedisWangException("不知道的pubsb返回类型: " + firstObj);
             }
+            logger.info("subscribedChannels====:"+subscribedChannels);
         } while (subscribedChannels > 0);
 
         return null;
     }
 
 
-    public void onMessage(String channel, String message) {
-    }
+    public abstract void onMessage(String channel, String message) ;
 
     public void onPMessage(String pattern, String channel, String message) {
     }
 
     public void onSubscribe(String channel, int subscribedChannels) {
+        logger.info("成功订阅"+subscribedChannels+"个频道："+channel);
     }
 
     public void onUnsubscribe(String channel, int subscribedChannels) {
