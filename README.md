@@ -3,7 +3,7 @@
 ## 这是一款简单高效的redis-java客户端
 
 
-目前是单机版本、sentinel哨兵模式的redis连接，后续支持集群版本的连接
+支持单机版本、sentinel哨兵模式的redis连接，后续支持集群版本的连接
 
 目前支持的操作：set,mset,get,del,expires,setnx,lpush,rpush,lpop.rpop,hset,hget,hmset,sadd,scard,sismember,zadd,zrangebyscore,zrevrangebyscore,zcount,hyperloglog...
 
