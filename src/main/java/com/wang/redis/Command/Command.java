@@ -113,4 +113,9 @@ public enum Command {
     //
     sentinel,
 
+
+
+    //
+    subscribe,
+
 }

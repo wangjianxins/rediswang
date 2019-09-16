@@ -17,7 +17,6 @@ public abstract class AbstractExecute<T> implements Execute<T> {
     @Override
     public T doExecute(Connection connection,Command command,Object ...params){
         T result;
-
         try {
             send(connection.getOutputStream(), command, params);
             connection.getOutputStream().flush();

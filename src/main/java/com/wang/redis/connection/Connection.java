@@ -10,6 +10,8 @@ public interface Connection {
 
     RedisOutputStream getOutputStream();
 
+    void setTimeoutInfinite();
+
     void close();
 
     Boolean isClosed();

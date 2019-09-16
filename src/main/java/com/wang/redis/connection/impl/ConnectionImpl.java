@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
 
 /**
  * @Description 连接实现类
@@ -45,6 +46,15 @@ public class ConnectionImpl implements Connection {
     @Override
     public RedisOutputStream getOutputStream() {
         return outputStream;
+    }
+
+    @Override
+    public void setTimeoutInfinite() {
+        try {
+            socket.setSoTimeout(0);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

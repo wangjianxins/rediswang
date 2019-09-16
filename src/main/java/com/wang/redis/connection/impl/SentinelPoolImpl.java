@@ -1,11 +1,13 @@
 package com.wang.redis.connection.impl;
 
 import com.wang.redis.Exception.RedisWangException;
+import com.wang.redis.client.host.RedisPubSub;
 import com.wang.redis.client.sentinel.SimpleSentinelClient;
 import com.wang.redis.connection.Connection;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -71,6 +73,29 @@ public class SentinelPoolImpl extends DefaultAbstractPoolImpl {
                 String masterhost = (String) masterAddr.get(0);
                 Integer masterport = (Integer) masterAddr.get(1);
                 master = masterhost+":"+ masterport;
+
+                //这里需要订阅哨兵的频道，随时的得知哨兵选举的最新的master
+                SimpleSentinelClient finalSimpleSentinelClient = simpleSentinelClient;
+                new Thread(() -> finalSimpleSentinelClient.subscribe(new RedisPubSub(){
+                    @Override
+                    public void onMessage(String channel, String message) {
+                        logger.debug("Sentinel {}:{} published: {}."+address +port+message);
+                        String[] switchMasterMsg = message.split(" ");
+
+                        if (switchMasterMsg.length > 3) {
+
+                            if (masterName.equals(switchMasterMsg[0])) {
+                                currentHostMaster = switchMasterMsg[3]+":"+switchMasterMsg[4];
+                            } else {
+                                logger.debug("当前变更的不是我们配置mastername"+switchMasterMsg[0]+masterName);
+                            }
+
+                        } else {
+                            logger.error("pubsub消息不合法"+address+port+message);
+                        }
+                    }
+                },"+switch-master")).start();
+
             }
 
             if(master == null){
@@ -81,8 +106,6 @@ public class SentinelPoolImpl extends DefaultAbstractPoolImpl {
                 }
             }
             currentHostMaster = master;
-            //这里需要订阅哨兵的频道，随时的得知哨兵选举的最新的master
-
 
 
         }catch (Exception e){
@@ -90,7 +113,7 @@ public class SentinelPoolImpl extends DefaultAbstractPoolImpl {
             throw new RedisWangException("初始化哨兵模式连接池失败："+e.getMessage());
         }finally {
             //这里还要释放哨兵的连接
-            simpleSentinelClient.close();
+//            simpleSentinelClient.close();
             reentrantLock.unlock();
         }
 

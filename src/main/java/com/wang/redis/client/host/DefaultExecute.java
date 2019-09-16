@@ -1,8 +1,11 @@
 package com.wang.redis.client.host;
 
 import com.wang.redis.Command.Command;
+import com.wang.redis.Serializer.StringRedisSerializer;
 import com.wang.redis.connection.Connection;
 import com.wang.redis.connection.ConnectionPool;
+import com.wang.redis.result.ObjectResult;
+import com.wang.redis.result.VoidResult;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
@@ -14,7 +17,7 @@ import java.util.List;
  * @author Jianxin Wang
  * @date 2019-09-09
  */
-public abstract class DefaultExecute {
+public class DefaultExecute {
     private static final Logger logger = Logger.getLogger(DefaultExecute.class);
 
     protected ConnectionPool connectionPool;
@@ -61,5 +64,13 @@ public abstract class DefaultExecute {
         }
         connectionList.clear();
     }
+
+
+    //======pub,sub
+
+    public void subscribe(final RedisPubSub redisPubSub, final String channels) {
+        redisPubSub.subscribe(connectionPool.getConnection(),Command.subscribe, RedisPubSub.class, StringRedisSerializer.serialize(channels));
+    }
+
 
 }

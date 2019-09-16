@@ -27,7 +27,7 @@ public class ObjectResult extends AbstractExecute<List> {
         return this.process(inputStream);
     }
 
-    public Object process(RedisInputStream inputStream) throws Exception{
+    public static Object process(RedisInputStream inputStream) throws Exception{
         //需要判断不同的情况
         final byte b = inputStream.readByte();
         if (b == PLUS_BYTE) {
@@ -80,7 +80,7 @@ public class ObjectResult extends AbstractExecute<List> {
         return result;
     }
 
-    private List<Object> processMultiBulkReply(final RedisInputStream in) throws IOException {
+    public static List<Object> processMultiBulkReply(final RedisInputStream in) throws IOException {
 //        String result = in.readLine();
 //        int len = Integer.valueOf(result.replace("*","").trim());
         final int len = (int) in.readLongCrLf();

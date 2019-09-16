@@ -33,6 +33,11 @@ public class ConnectionProxy implements Connection {
         return connection.getOutputStream();
     }
 
+    @Override
+    public void setTimeoutInfinite() {
+        connection.setTimeoutInfinite();
+    }
+
     /**
      * @Description 伪代理，主要是这里
      * @author Jianxin Wang
