@@ -12,6 +12,8 @@ public class RedisWangProperties {
     //哨兵host:port信息，逗号分割
     private String sentinels;
     private String masterName;
+    private String type;
+    private String clusterHost;
 
 
     public String getAddress() {
@@ -45,5 +47,21 @@ public class RedisWangProperties {
 
     public void setMasterName(String masterName) {
         this.masterName = masterName;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getClusterHost() {
+        return clusterHost;
+    }
+
+    public void setClusterHost(String clusterHost) {
+        this.clusterHost = clusterHost;
     }
 }

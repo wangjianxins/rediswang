@@ -12,12 +12,12 @@ import java.util.List;
  * @author Jianxin Wang
  * @date 2019-09-15
  */
-public class SimpleSentinelClient extends DefaultExecute {
+public class SimpleClient extends DefaultExecute {
 
     public static final String GET_MASTER = "get-master-addr-by-name";
 
 
-    public SimpleSentinelClient(String address,int port){
+    public SimpleClient(String address, int port){
         super(new SentinelPoolImpl(address,port));
     }
 

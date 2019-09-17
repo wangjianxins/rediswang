@@ -1,4 +1,5 @@
 package com.wang.redis.config;
+import com.wang.redis.Exception.RedisWangException;
 import com.wang.redis.client.host.RedisWangClient;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 
 //自动装配类
@@ -24,17 +28,27 @@ public class RedisWangAuthConfigure {
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "redis",value = "enabled",havingValue = "true")
     public RedisWangClient getClient(){
-        if(null == redisWangProperties.getSentinels() || redisWangProperties.getSentinels().length() == 0){
-            logger.info("安装普通模式");
-            return new RedisWangClient(redisWangProperties.getAddress(),redisWangProperties.getPort());
-        }else{
-            //哨兵模式
-            logger.info("安装哨兵模式");
-            return new RedisWangClient(redisWangProperties.getMasterName(),redisWangProperties.getSentinels());
+        String type = redisWangProperties.getType();
+        if(null == type){
+            throw new RedisWangException("配置参数redis.type未配置");
         }
+        RedisWangClient redisWangClient = null;
+        switch (type){
+            case "host":
+                redisWangClient= new RedisWangClient(redisWangProperties.getAddress(),redisWangProperties.getPort());
+                break;
+            case "sentinel":
+                redisWangClient = new RedisWangClient(redisWangProperties.getMasterName(),redisWangProperties.getSentinels());
+                break;
+            case "cluster":
+                String clusterHost = redisWangProperties.getClusterHost();
+                String[] clusterArray = clusterHost.split(",");
+                redisWangClient = new RedisWangClient(new HashSet(Arrays.asList(clusterArray)),15000);
+                break;
+        }
+
+        return redisWangClient;
     }
-
-
 
 
 }

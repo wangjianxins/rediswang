@@ -108,8 +108,6 @@ public enum Command {
 
 
 
-
-
     //
     sentinel,
 
@@ -117,5 +115,9 @@ public enum Command {
 
     //
     subscribe,
+
+
+    //集群
+    cluster,
 
 }

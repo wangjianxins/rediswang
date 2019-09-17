@@ -2,6 +2,7 @@ package com.wang.redis.client.host;
 
 import com.wang.redis.Command.Command;
 import com.wang.redis.Exception.RedisWangException;
+import com.wang.redis.connection.impl.ClusterPoolImpl;
 import com.wang.redis.connection.impl.ConnectionPoolImpl;
 import com.wang.redis.connection.impl.SentinelPoolImpl;
 import com.wang.redis.result.*;
@@ -17,12 +18,17 @@ import java.util.*;
  */
 public class RedisWangClient extends DefaultExecute implements BaseClient{
 
+    //哨兵
     public RedisWangClient(String masterName,String sentinels){
         super(new SentinelPoolImpl(masterName,sentinels));
     }
-
+    //单机
     public RedisWangClient(String address,int port){
         super(new ConnectionPoolImpl(address,port));
+    }
+    //集群
+    public RedisWangClient(Set<String> clusterHost,int maxAttempts){
+        super(new ClusterPoolImpl(clusterHost,maxAttempts));
     }
 
     //获得set客户端

@@ -2,7 +2,7 @@ package com.wang.redis.connection.impl;
 
 import com.wang.redis.Exception.RedisWangException;
 import com.wang.redis.client.host.RedisPubSub;
-import com.wang.redis.client.sentinel.SimpleSentinelClient;
+import com.wang.redis.client.sentinel.SimpleClient;
 import com.wang.redis.connection.Connection;
 import org.apache.log4j.Logger;
 
@@ -49,7 +49,7 @@ public class SentinelPoolImpl extends DefaultAbstractPoolImpl {
     //获得哨兵监控的redis节点中主节点的信息，这里的参数masterName不一定是正确的主节点，有可能是目前的主节点down了，哨兵正在做新的选举中
     public String getEffectiveMaster(String masterName,Set<String> sentinels){
         //初始化连接哨兵的池,用完需要关闭连接
-        SimpleSentinelClient simpleSentinelClient = null;
+        SimpleClient simpleSentinelClient = null;
         String master = null;
         Boolean sentineleislive = false;
         try {
@@ -60,7 +60,7 @@ public class SentinelPoolImpl extends DefaultAbstractPoolImpl {
                 String address = sentinel.trim().split(":")[0];
                 String port = sentinel.trim().split(":")[1];
                 if(simpleSentinelClient == null){
-                    simpleSentinelClient = new SimpleSentinelClient(address,Integer.valueOf(port));
+                    simpleSentinelClient = new SimpleClient(address,Integer.valueOf(port));
                 }
                 List<Object> masterAddr = simpleSentinelClient.getSentinelMasterByName(masterName);
                 logger.info("masterAddr:"+masterAddr);
@@ -87,7 +87,7 @@ public class SentinelPoolImpl extends DefaultAbstractPoolImpl {
             for(String sentinel:sentinels) {
                 String address = sentinel.split(":")[0];
                 String port = sentinel.split(":")[1];
-                SimpleSentinelClient subsentinel = new SimpleSentinelClient(address,Integer.valueOf(port));
+                SimpleClient subsentinel = new SimpleClient(address,Integer.valueOf(port));
                 new Thread(() -> subsentinel.subscribe(new RedisPubSub(){
                     @Override
                     public void onMessage(String channel, String message) {
