@@ -27,10 +27,10 @@ public class ConnectionPoolImpl extends DefaultAbstractPoolImpl {
         this.port = port;
         logger.info("[redis-wang]redis配置完成");
         //尝试连接是否配置数据正确
-        connection();
+        connection(null);
     }
 
-    public  Connection connection(){
+    public  Connection connection(Object key){
         Connection connection = null;
         try {
             connection = new ConnectionImpl(address,port);

@@ -1,12 +1,13 @@
 package com.wang.redis.connection.impl;
 
 import com.wang.redis.Command.Command;
+import com.wang.redis.Serializer.StringRedisSerializer;
 import com.wang.redis.client.cluster.RedisClusterCache;
 import com.wang.redis.client.cluster.RedisClusterClient;
 import com.wang.redis.connection.Connection;
 import com.wang.redis.result.ObjectResult;
+import com.wang.redis.util.RedisClusterCRC16;
 import org.apache.log4j.Logger;
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -16,6 +17,9 @@ import java.util.Set;
  * @date 2019-09-17
  */
 public class ClusterPoolImpl extends DefaultAbstractPoolImpl {
+
+    //是否开启集群模式的虚拟槽算法
+    protected Boolean clusterFlag;
 
     public static final String CLUSTER_SLOTS = "slots";
 
@@ -50,6 +54,7 @@ public class ClusterPoolImpl extends DefaultAbstractPoolImpl {
 //            if (password != null) {
 //                clusterClient.auth(password);
 //            }
+            clusterFlag = false;
             List<Object> slots = clusterClient.doExecute(Command.cluster, ObjectResult.class,CLUSTER_SLOTS);
             for(Object slot : slots){
                 List<Object> slotInfo = (List<Object>) slot;
@@ -67,14 +72,12 @@ public class ClusterPoolImpl extends DefaultAbstractPoolImpl {
 
 
     @Override
-    public Connection connection() {
-        Connection connection = null;
-        try {
-            connection = new ConnectionImpl(address,port);
-        } catch (IOException e) {
-            logger.error("[wang-redis]连接错误");
+    public Connection connection(Object key) {
+        byte[] k = new byte[0];
+        if(!(key instanceof byte[])){
+            k = StringRedisSerializer.serialize(key.toString());
         }
-        return connection;
+        return redisClusterCache.getConnectionByKey(RedisClusterCRC16.getSlot(k));
     }
 
 

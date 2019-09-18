@@ -38,8 +38,8 @@ public abstract class DefaultAbstractPoolImpl implements ConnectionPool {
     protected volatile int totalSize;
 
     @Override
-    public Connection getConnection() {
-        return this.getConnection(0);
+    public Connection getConnection(Object key) {
+        return this.getConnection(0,key);
     }
 
     public List<Connection> getAllConection(){
@@ -52,8 +52,8 @@ public abstract class DefaultAbstractPoolImpl implements ConnectionPool {
      * @date 2019-08-27
      */
     @Override
-    public Connection getConnection(long second) {
-        initPoole();
+    public Connection getConnection(long second,Object key) {
+        initPoole(key);
         Connection connection = null;
         //首先判断连接池的大小还有多少
         //大于0说明还有连接可以拿取
@@ -105,12 +105,12 @@ public abstract class DefaultAbstractPoolImpl implements ConnectionPool {
      * @author Jianxin Wang
      * @date 2019-08-27
      */
-    public void initPoole(){
+    public void initPoole(Object key){
         logger.debug("[当前redis连接池大小为;]"+connectionPool.size());
         if (connectionPool.size() < minIdleSize) {
             lock.lock();
             try {
-                incrementPool();
+                incrementPool(key);
             } catch (Exception e) {
                 throw new RedisWangException("[redis-wang]获得连接池错误");
             } finally {
@@ -145,13 +145,13 @@ public abstract class DefaultAbstractPoolImpl implements ConnectionPool {
      * @author Jianxin Wang
      * @date 2019-08-27
      */
-    public void incrementPool() throws IOException {
+    public void incrementPool(Object key) throws IOException {
         if (totalSize >= maxSize) {
             return;
         }
         int len = minIdleSize - connectionPool.size();
         for(int i = 0; i < len; i++){
-            connectionPool.add(new ConnectionProxy(connection(),this));
+            connectionPool.add(new ConnectionProxy(connection(key),this));
             totalSize++;
         }
     }
@@ -162,7 +162,7 @@ public abstract class DefaultAbstractPoolImpl implements ConnectionPool {
      * @author Jianxin Wang
      * @date 2019-09-02
      */
-    public abstract Connection connection();
+    public abstract Connection connection(Object key);
 
     /**
      * @Description 释放连接

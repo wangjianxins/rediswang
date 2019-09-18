@@ -17,6 +17,8 @@ import java.util.List;
 public class DefaultExecute {
     private static final Logger logger = Logger.getLogger(DefaultExecute.class);
 
+    ThreadLocal<Object> threadkey = new ThreadLocal();
+
     protected ConnectionPool connectionPool;
 
     public DefaultExecute(ConnectionPool connectionPool){
@@ -38,7 +40,7 @@ public class DefaultExecute {
             e.printStackTrace();
         }
 
-        return (T) commandInstance.doExecute(connectionPool.getConnection(),command,params);
+        return (T) commandInstance.doExecute(connectionPool.getConnection(params[0]),command,params);
     }
 
     public ConnectionPool getConnectionPool() {
@@ -66,7 +68,7 @@ public class DefaultExecute {
     //======pub,sub
 
     public void subscribe(final RedisPubSub redisPubSub, final String channel) {
-        redisPubSub.subscribe(connectionPool.getConnection(),Command.subscribe, channel);
+        redisPubSub.subscribe(connectionPool.getConnection(null),Command.subscribe, channel);
     }
 
 

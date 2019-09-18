@@ -132,7 +132,7 @@ public class SentinelPoolImpl extends DefaultAbstractPoolImpl {
     }
 
     @Override
-    public Connection connection() {
+    public Connection connection(Object key) {
         String address = currentHostMaster.split(":")[0];
         String port = currentHostMaster.split(":")[1];
         Connection connection = null;
