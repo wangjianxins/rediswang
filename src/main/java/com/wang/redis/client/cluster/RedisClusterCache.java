@@ -1,8 +1,7 @@
 package com.wang.redis.client.cluster;
 
-import com.wang.redis.connection.Connection;
-import com.wang.redis.connection.ConnectionPool;
 import com.wang.redis.connection.impl.ClusterPoolImpl;
+import com.wang.redis.transmission.HostInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,12 +72,15 @@ public class RedisClusterCache {
         return slotNums;
     }
 
-    public Connection getConnectionByKey(int slot){
-        ConnectionPool connectionPool = slots.get(slot);
+    public HostInfo getConnectionByKey(int slot){
+        ClusterPoolImpl connectionPool = slots.get(slot);
         if (connectionPool != null) {
             // It can't guaranteed to get valid connection because of node
             // assignment
-            return connectionPool.getConnection();
+            HostInfo hostInfo = new HostInfo();
+            hostInfo.setAdress(connectionPool.getAddress());
+            hostInfo.setPort(connectionPool.getPort());
+            return hostInfo;
         } else {
             //初始化从新，根据node的缓存map
 //            connectionPool = cache.getSlotPool(slot);

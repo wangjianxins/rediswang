@@ -6,8 +6,11 @@ import com.wang.redis.client.cluster.RedisClusterCache;
 import com.wang.redis.client.cluster.RedisClusterClient;
 import com.wang.redis.connection.Connection;
 import com.wang.redis.result.ObjectResult;
+import com.wang.redis.transmission.HostInfo;
 import com.wang.redis.util.RedisClusterCRC16;
 import org.apache.log4j.Logger;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -26,7 +29,9 @@ public class ClusterPoolImpl extends DefaultAbstractPoolImpl {
     private static final Logger logger = Logger.getLogger(DefaultAbstractPoolImpl.class);
 
     private Set<String> clusterHost;
+    //重试次数
     private int maxAttempts;
+    
     private String address;
     private int port;
 
@@ -54,6 +59,7 @@ public class ClusterPoolImpl extends DefaultAbstractPoolImpl {
 //            if (password != null) {
 //                clusterClient.auth(password);
 //            }
+            //select db
             clusterFlag = false;
             List<Object> slots = clusterClient.doExecute(Command.cluster, ObjectResult.class,CLUSTER_SLOTS);
             for(Object slot : slots){
@@ -66,10 +72,8 @@ public class ClusterPoolImpl extends DefaultAbstractPoolImpl {
             }
 
             clusterClient.close(connectionPool);
-
         }
     }
-
 
     @Override
     public Connection connection(Object key) {
@@ -77,8 +81,29 @@ public class ClusterPoolImpl extends DefaultAbstractPoolImpl {
         if(!(key instanceof byte[])){
             k = StringRedisSerializer.serialize(key.toString());
         }
-        return redisClusterCache.getConnectionByKey(RedisClusterCRC16.getSlot(k));
+        Connection connection = null;
+        try {
+            HostInfo hostInfo = redisClusterCache.getConnectionByKey(RedisClusterCRC16.getSlot(k));
+            connection = new ConnectionImpl(hostInfo.getAdress(),hostInfo.getPort());
+        } catch (IOException e) {
+            logger.error("[wang-redis]连接错误");
+        }
+        return connection;
     }
 
+    public String getAddress() {
+        return address;
+    }
 
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
 }
