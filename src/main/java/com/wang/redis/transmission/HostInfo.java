@@ -1,15 +1,21 @@
 package com.wang.redis.transmission;
 
 public class HostInfo {
-    public String adress;
+    public String address;
     public int port;
 
-    public String getAdress() {
-        return adress;
+    public HostInfo(){}
+    public HostInfo(String address,int port){
+        this.address = address;
+        this.port  = port;
     }
 
-    public void setAdress(String adress) {
-        this.adress = adress;
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String adrdess) {
+        this.address = address;
     }
 
     public int getPort() {

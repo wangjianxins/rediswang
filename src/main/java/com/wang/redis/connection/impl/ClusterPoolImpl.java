@@ -55,7 +55,7 @@ public class ClusterPoolImpl extends DefaultAbstractPoolImpl {
             String port = host.split(":")[1];
             this.address = address;
             this.port = Integer.valueOf(port);
-            RedisClusterClient clusterClient = new RedisClusterClient(this,address,Integer.valueOf(port));
+            RedisClusterClient clusterClient = new RedisClusterClient(this);
 //            if (password != null) {
 //                clusterClient.auth(password);
 //            }
@@ -73,21 +73,29 @@ public class ClusterPoolImpl extends DefaultAbstractPoolImpl {
 
             clusterClient.close(connectionPool);
         }
+        //归还初始化
+        address = null;
+        port = 0;
     }
 
     @Override
     public Connection connection(Object key) {
         byte[] k = new byte[0];
-        if(!(key instanceof byte[])){
+        if (!(key instanceof byte[])) {
             k = StringRedisSerializer.serialize(key.toString());
         }
         Connection connection = null;
+        HostInfo hostInfo;
         try {
-            HostInfo hostInfo = redisClusterCache.getConnectionByKey(RedisClusterCRC16.getSlot(k));
-            connection = new ConnectionImpl(hostInfo.getAdress(),hostInfo.getPort());
+            if (address == null)  {
+                hostInfo = redisClusterCache.getConnectionByKey(RedisClusterCRC16.getSlot(k));
+            } else {
+                hostInfo = new HostInfo(address,port);
+            }
+            connection = new ConnectionImpl(hostInfo.getAddress(),hostInfo.getPort());
         } catch (IOException e) {
             logger.error("[wang-redis]连接错误");
-        }
+        } 
         return connection;
     }
 

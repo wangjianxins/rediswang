@@ -10,7 +10,7 @@ public class RedisClusterClient extends DefaultExecute {
     private String address;
     private int port;
 
-    public RedisClusterClient(ConnectionPool connectionPool,String address, int port){
+    public RedisClusterClient(ConnectionPool connectionPool){
         super(connectionPool);
         this.connectionPool = connectionPool;
     }

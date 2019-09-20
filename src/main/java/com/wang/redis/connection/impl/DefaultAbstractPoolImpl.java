@@ -112,7 +112,8 @@ public abstract class DefaultAbstractPoolImpl implements ConnectionPool {
             try {
                 incrementPool(key);
             } catch (Exception e) {
-                throw new RedisWangException("[redis-wang]获得连接池错误");
+                e.printStackTrace();
+                throw new RedisWangException("[redis-wang]获得连接池错误:"+e.getMessage());
             } finally {
                 lock.unlock();
             }

@@ -75,11 +75,7 @@ public class RedisClusterCache {
     public HostInfo getConnectionByKey(int slot){
         ClusterPoolImpl connectionPool = slots.get(slot);
         if (connectionPool != null) {
-            // It can't guaranteed to get valid connection because of node
-            // assignment
-            HostInfo hostInfo = new HostInfo();
-            hostInfo.setAdress(connectionPool.getAddress());
-            hostInfo.setPort(connectionPool.getPort());
+            HostInfo hostInfo = new HostInfo(connectionPool.getAddress(),connectionPool.getPort());
             return hostInfo;
         } else {
             //初始化从新，根据node的缓存map
