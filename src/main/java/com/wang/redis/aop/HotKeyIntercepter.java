@@ -1,5 +1,14 @@
 package com.wang.redis.aop;
 
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Method;
+
 /**
  * @Description：
  * 有关热key和大key的策略
@@ -15,5 +24,17 @@ package com.wang.redis.aop;
  * @author Jianxin Wang
  * @date 2019-09-17
  */
+@Aspect
+@Component
 public class HotKeyIntercepter {
+
+    @Pointcut("@annotation(RedisKey)")
+    public void annotationPoinCut(){}
+
+    @Before("@annotation(RedisKey)")
+    public void before(JoinPoint joinPoint){
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
+        System.out.println("方法规则式拦截,"+method.getName());
+    }
 }
