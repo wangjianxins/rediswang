@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -35,7 +36,8 @@ public abstract class DefaultAbstractPoolImpl implements ConnectionPool {
     private final int maxIdleSize = 10;
 
     //当前连接数
-    protected volatile int totalSize;
+    protected AtomicLong totalSize = new AtomicLong(0);
+
 
     @Override
     public Connection getConnection(Object key) {
@@ -134,7 +136,7 @@ public abstract class DefaultAbstractPoolImpl implements ConnectionPool {
                 } catch (NoSuchElementException e) {
                     break;
                 }
-                totalSize--;
+                totalSize.decrementAndGet();
             }
         } finally {
             lock.unlock();
@@ -147,13 +149,13 @@ public abstract class DefaultAbstractPoolImpl implements ConnectionPool {
      * @date 2019-08-27
      */
     public void incrementPool(Object key) throws IOException {
-        if (totalSize >= maxSize) {
+        if (totalSize.get() >= maxSize) {
             return;
         }
         int len = minIdleSize - connectionPool.size();
         for(int i = 0; i < len; i++){
             connectionPool.add(new ConnectionProxy(connection(key),this));
-            totalSize++;
+            totalSize.incrementAndGet();
         }
     }
 
@@ -178,7 +180,7 @@ public abstract class DefaultAbstractPoolImpl implements ConnectionPool {
                 connectionPool.add(connection);
             } else {
                 connection.close();
-                totalSize--;
+                totalSize.decrementAndGet();
             }
         } finally {
             lock.unlock();
