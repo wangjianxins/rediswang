@@ -3,21 +3,18 @@ package com.wang.redis.client.host;
 import com.wang.redis.Command.Command;
 import com.wang.redis.Serializer.FasterSerializer;
 import com.wang.redis.Serializer.StringRedisSerializer;
-import com.wang.redis.aop.annotation.RedisKey;
 import com.wang.redis.connection.Connection;
 import com.wang.redis.io.RedisInputStream;
 import com.wang.redis.io.RedisOutputStream;
 import com.wang.redis.transmission.TransmissionData;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
+
 public abstract class AbstractExecute<T> implements Execute<T> {
 
     protected static FasterSerializer fasterSerializer = new FasterSerializer();
 
-    @RedisKey
     @Override
     public T doExecute(Connection connection,Command command,Object ...params){
         T result;

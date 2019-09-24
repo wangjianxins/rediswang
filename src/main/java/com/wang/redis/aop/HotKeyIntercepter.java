@@ -28,10 +28,11 @@ import java.lang.reflect.Method;
 @Component
 public class HotKeyIntercepter {
 
-    @Pointcut("@annotation(RedisKey)")
+    @Pointcut("@annotation(com.wang.redis.aop.annotation.RedisKey)")
+//    @Pointcut("execution(public * com.wang.redis.client.host.*.*(..))")
     public void annotationPoinCut(){}
 
-    @Before("@annotation(RedisKey)")
+    @Before("annotationPoinCut()")
     public void before(JoinPoint joinPoint){
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();

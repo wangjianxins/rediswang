@@ -1,9 +1,11 @@
 package com.wang.redis.client.host;
 
 import com.wang.redis.Command.Command;
+import com.wang.redis.aop.annotation.RedisKey;
 import com.wang.redis.connection.Connection;
 import com.wang.redis.connection.ConnectionPool;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
@@ -14,6 +16,7 @@ import java.util.List;
  * @author Jianxin Wang
  * @date 2019-09-09
  */
+@Component
 public class DefaultExecute {
     private static final Logger logger = Logger.getLogger(DefaultExecute.class);
 
@@ -25,6 +28,7 @@ public class DefaultExecute {
         this.connectionPool = connectionPool;
     }
 
+    @RedisKey
     public <T>T doExecute(Command command, Class<? extends Execute<T>> execute , Object ...params){
         Execute commandInstance = null;
         try {

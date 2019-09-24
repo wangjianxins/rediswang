@@ -99,7 +99,7 @@ public class SentinelPoolImpl extends DefaultAbstractPoolImpl {
                             if (masterName.equals(switchMasterMsg[0])) {
                                 currentHostMaster = switchMasterMsg[3]+":"+switchMasterMsg[4];
                                 subsentinel.close(connectionPool);
-                                totalSize = 0;
+                                totalSize.set(0);
                             } else {
                                 logger.debug("当前变更的不是我们配置mastername"+switchMasterMsg[0]+masterName);
                             }
