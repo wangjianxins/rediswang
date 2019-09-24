@@ -176,8 +176,8 @@ public class DefaultZsetClient implements ZsetClient {
     }
 
     @Override
-    public int zcountbyscore(double start, double end) {
-        return redisWangClient.doExecute(Command.zincrby, IntResult.class,getCurrentkey(),toByteArray(start),toByteArray(end));
+    public int zcountbyscore(double min, double max) {
+        return redisWangClient.doExecute(Command.zcount, IntResult.class,getCurrentkey(),toByteArray(min),toByteArray(max));
     }
 
     public Set revset(List list){
