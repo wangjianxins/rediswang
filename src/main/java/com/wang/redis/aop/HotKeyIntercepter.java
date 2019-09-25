@@ -1,10 +1,14 @@
 package com.wang.redis.aop;
 
+import com.wang.redis.client.sentinel.SimpleClient;
+import com.wang.redis.config.RedisWangProperties;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 
@@ -26,6 +30,9 @@ import java.lang.reflect.Method;
 @Aspect
 @Component
 public class HotKeyIntercepter {
+
+    @Autowired
+    RedisWangProperties redisWangProperties;
 
     @Pointcut("@annotation(com.wang.redis.aop.annotation.RedisKey)")
     public void annotationPointCut(){}
