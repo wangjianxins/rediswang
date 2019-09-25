@@ -1,5 +1,8 @@
 package com.wang.redis.config;
 import com.wang.redis.Exception.RedisWangException;
+import com.wang.redis.aop.HotKeyIntercepter;
+import com.wang.redis.client.host.AbstractExecute;
+import com.wang.redis.client.host.DefaultExecute;
 import com.wang.redis.client.host.RedisWangClient;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,5 +53,9 @@ public class RedisWangAuthConfigure {
         return redisWangClient;
     }
 
+    @Bean
+    public HotKeyIntercepter hotKeyIntercepter(){
+        return new HotKeyIntercepter();
+    }
 
 }

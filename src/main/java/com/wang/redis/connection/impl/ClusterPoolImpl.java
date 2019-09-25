@@ -2,6 +2,7 @@ package com.wang.redis.connection.impl;
 
 import com.wang.redis.Command.Command;
 import com.wang.redis.Serializer.StringRedisSerializer;
+import com.wang.redis.aop.annotation.RedisKey;
 import com.wang.redis.client.cluster.RedisClusterCache;
 import com.wang.redis.client.cluster.RedisClusterClient;
 import com.wang.redis.connection.Connection;
@@ -36,7 +37,7 @@ public class ClusterPoolImpl extends DefaultAbstractPoolImpl {
     private int port;
 
     private RedisClusterCache redisClusterCache;
-
+    
     public ClusterPoolImpl(Set<String> clusterHost,int maxAttempts){
         redisClusterCache = new RedisClusterCache();
         this.clusterHost = clusterHost;
@@ -48,7 +49,7 @@ public class ClusterPoolImpl extends DefaultAbstractPoolImpl {
         this.address = nodeHost.split(":")[0];
         this.port = Integer.valueOf(nodeHost.split(":")[1]);
     }
-
+    
     private void initcache(){
         for(String host : clusterHost){
             String address = host.split(":")[0];

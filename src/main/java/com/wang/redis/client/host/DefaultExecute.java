@@ -28,7 +28,6 @@ public class DefaultExecute {
         this.connectionPool = connectionPool;
     }
 
-    @RedisKey
     public <T>T doExecute(Command command, Class<? extends Execute<T>> execute , Object ...params){
         Execute commandInstance = null;
         try {

@@ -2,6 +2,7 @@ package com.wang.redis.client.host;
 
 import com.wang.redis.Command.Command;
 import com.wang.redis.Exception.RedisWangException;
+import com.wang.redis.aop.annotation.RedisKey;
 import com.wang.redis.connection.impl.ClusterPoolImpl;
 import com.wang.redis.connection.impl.ConnectionPoolImpl;
 import com.wang.redis.connection.impl.SentinelPoolImpl;
@@ -27,6 +28,7 @@ public class RedisWangClient extends DefaultExecute implements BaseClient{
         super(new ConnectionPoolImpl(address,port));
     }
     //集群
+
     public RedisWangClient(Set<String> clusterHost,int maxAttempts){
         super(new ClusterPoolImpl(clusterHost,maxAttempts));
     }
@@ -95,6 +97,7 @@ public class RedisWangClient extends DefaultExecute implements BaseClient{
     }
 
     @Override
+    @RedisKey
     public List<String> mget(String... keys) {
         return (List<String>) doExecute(Command.mget, ObjectResult.class,keys);
     }
@@ -105,6 +108,7 @@ public class RedisWangClient extends DefaultExecute implements BaseClient{
     }
 
     @Override
+    @RedisKey
     public String get(String key) {
         return doExecute(Command.get, StringResult.class,key);
 
@@ -131,6 +135,7 @@ public class RedisWangClient extends DefaultExecute implements BaseClient{
     }
 
     @Override
+    @RedisKey
     public int pfcount(String key) {
         return doExecute(Command.pfcount,IntResult.class,key);
     }
@@ -240,6 +245,7 @@ public class RedisWangClient extends DefaultExecute implements BaseClient{
     }
 
     @Override
+    @RedisKey
     public Map<String, Object> hgetall(String key) {
         throw new RedisWangException("暂未实现");
     }

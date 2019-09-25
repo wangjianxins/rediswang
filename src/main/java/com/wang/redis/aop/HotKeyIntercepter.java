@@ -1,12 +1,11 @@
 package com.wang.redis.aop;
 
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
-
 import java.lang.reflect.Method;
 
 /**
@@ -29,13 +28,22 @@ import java.lang.reflect.Method;
 public class HotKeyIntercepter {
 
     @Pointcut("@annotation(com.wang.redis.aop.annotation.RedisKey)")
-//    @Pointcut("execution(public * com.wang.redis.client.host.*.*(..))")
-    public void annotationPoinCut(){}
+    public void annotationPointCut(){}
 
-    @Before("annotationPoinCut()")
-    public void before(JoinPoint joinPoint){
+    @After("annotationPointCut()")
+    public void after(JoinPoint joinPoint){
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
-        System.out.println("方法规则式拦截,"+method.getName());
+        String name = signature.getName();
+
+        Object[] o = joinPoint.getArgs();
+        String value = (String) o[0];
+
+        if(name.equals("get")){
+            //统计这里的value字段
+
+        }
+
+
     }
 }
