@@ -52,6 +52,8 @@ public class RedisWangAuthConfigure {
 
         return redisWangClient;
     }
+
+
     @Bean
     public HotKeyIntercepter hotKeyIntercepter(){
         return new HotKeyIntercepter();
