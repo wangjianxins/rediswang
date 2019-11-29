@@ -50,8 +50,6 @@ public class RedisWangAuthConfigure {
                 break;
         }
 
-
-
         return redisWangClient;
     }
     @Bean
